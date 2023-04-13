@@ -5,8 +5,18 @@ name = "pypi"
 
 [packages]
 opencv-python = "*"
+scikit-image = "*"
+numpy = "*"
+scikit-learn = "*"
 
 [dev-packages]
+pylint = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.10"
+
+[scripts]
+lint = "bash ./lint.sh"
+imgprc = "python3 -m image_processing.main"
+test = "pytest"
