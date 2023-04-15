@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import cv2
 from skimage import img_as_float
 from skimage.segmentation import chan_vese
+import numpy as np
 
 @dataclass
 class DullRazorConfig:
@@ -38,6 +39,7 @@ def median_filtering(img, ksize=5):
     return cv2.medianBlur(img, ksize)
 
 def otsu_method(img, gaussian_ksize=(5,5), threshold=0, threshold_max_val=255):
+    # gray = img
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     blur = cv2.GaussianBlur(gray, gaussian_ksize, 0)
     _, ret = cv2.threshold(blur, threshold, threshold_max_val, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -86,3 +88,77 @@ def lession_segmentation(img):
     segmented_image = invert_bitwise(chan_vese_segmentation(invert_bitwise(segmented_image)))
     enclosed_image = closing(segmented_image)
     return opening(invert_bitwise(enclosed_image))
+
+def homomorphic_filtering(img):
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32) / 255.0
+    # Compute the size of the input image
+    rows, cols = image.shape
+
+    d0 = 0.1*rows
+    gamma_h = 1.2
+    gamma_l = 0.4
+    c = 1.2
+    # Compute the center of the image
+    crow, ccol = rows // 2, cols // 2
+
+    # Perform the logarithmic transformation
+    image_log = np.log(image + 1.0)
+
+    # Compute the DFT of the log-transformed image
+    image_dft = np.fft.fft2(image_log)
+
+    # Create a binary mask
+    mask = np.zeros((rows, cols), dtype=np.uint8)
+    mask[int(crow - d0):int(crow + d0), int(ccol - d0):int(ccol + d0)] = 1
+
+    # Convert the mask to a floating-point array
+    mask = mask.astype(np.float32)
+
+    # Create a complex array for the filter with the same size as the input image
+    filter = np.zeros((rows, cols), dtype=np.complex64)
+
+    # Set the filter values based on the formula
+    center = (crow, ccol)
+    u = np.arange(rows)
+    v = np.arange(cols)
+    u, v = np.meshgrid(u, v, indexing='ij')
+    filter = (gamma_h - gamma_l) * (1 - np.exp(-c * ((u - center[0])**2 + (v - center[1])**2) / (d0**2))) + gamma_l
+
+    # Perform the element-wise multiplication in the frequency domain
+    image_dft_filtered = image_dft * filter
+
+    # Perform the inverse DFT to obtain the filtered image
+    filtered_image = np.real(np.fft.ifft2(np.fft.ifftshift(image_dft_filtered)))
+
+    # Perform exponential transformation to obtain the final filtered image
+    filtered_image = np.exp(filtered_image) - 1.0
+
+    # Normalize the filtered image to the range [0, 255]
+    filtered_image = np.clip(filtered_image, 0, 1)
+    filtered_image = (filtered_image * 255).astype(np.uint8)
+
+    return filtered_image
+
+def glare_removal(img):
+    lower = (130,130,130)
+    upper = (255,255,255)
+    thresh = cv2.inRange(img, lower, upper)
+
+    hh, ww = img.shape[:2]
+
+    # apply morphology close and open to make mask
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7,7))
+    morph = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel, iterations=1)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9,9))
+    morph = cv2.morphologyEx(morph, cv2.MORPH_DILATE, kernel, iterations=1)
+
+    # floodfill the outside with black
+    black = np.zeros([hh + 2, ww + 2], np.uint8)
+    mask = morph.copy()
+    mask = cv2.floodFill(mask, black, (0,0), 0, 0, 0, flags=8)[1]
+
+    # use mask with input to do inpainting
+    # result1 = cv2.inpaint(img, mask, 101, cv2.INPAINT_TELEA)
+    result2 = cv2.inpaint(img, mask, 101, cv2.INPAINT_NS)
+
+    return result2
