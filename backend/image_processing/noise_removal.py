@@ -162,3 +162,13 @@ def glare_removal(img):
     result2 = cv2.inpaint(img, mask, 101, cv2.INPAINT_NS)
 
     return result2
+
+def adaptive_histogram_equalization(img):
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(3,3))
+    return clahe.apply(img)
+
+def histogram_equalization(img):
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    img = cv2.GaussianBlur(img, (9,9), 0)
+    return cv2.equalizeHist(img)
