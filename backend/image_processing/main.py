@@ -26,6 +26,7 @@ from .border_detection import (
     canny,
 )
 
+
 def main():
     for i, image_metadata in enumerate(TEST_IMAGES):
         img = cv2.imread(image_metadata.get_path(), cv2.IMREAD_COLOR)
@@ -58,13 +59,14 @@ def main():
         # cv2.imshow(f'Edges {i + 1}', edges)
         # cv2.imshow(f'Edges canny {i + 1}', edges_canny)
 
-        u, v, volt = get_simetry(enclosed_image)
+        u, v = get_simetry(enclosed_image)
         roughness = get_roughness(enclosed_image)
         img_with_elip, _ = get_major_axis(enclosed_image, img)
 
         # cv2.imshow(f'Elips {i + 1}', img_with_elip)
-        cv2.imshow(f'Simetry {i + 1}', volt)
-        print(f'Color_score: {get_color_score(segmented_color, enclosed_image)} Symetry: {u}, {v} Roughness: {roughness}')
+        # cv2.imshow(f'Simetry {i + 1}', volt)
+        print(f'Color_score: {get_color_score(segmented_color, enclosed_image)} '
+              + f'Symetry: {u}, {v} Roughness: {roughness}')
 
         # mssimv = get_mssism(img, blurred_image)
         # print(f"MSSISM: R {round(mssimv[2] * 100, 2)}% G {round(mssimv[1] * 100, 2)}% B "
@@ -77,10 +79,11 @@ def main():
         #    f1_score = get_f1_score(img_seg, enclosed_image)
         #    print(f'F1 Score: {f1_score}')
 
-            # cv2.imshow(f'Original segmented {i + 1}', img_seg)
+        # cv2.imshow(f'Original segmented {i + 1}', img_seg)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
 
 if __name__ == '__main__':
     main()
