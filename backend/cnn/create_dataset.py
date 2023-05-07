@@ -52,6 +52,7 @@ def label_ham_dataset(ham_filenames,ham_csv):
         print(img_name)
   return dataset_labeled
 
+# Consider add some test to verify the correct labeling for some random images in the dataset
 def process_dataset():
   ham_csv = ""
   ham_filenames = {}
