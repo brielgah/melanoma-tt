@@ -10,6 +10,8 @@ numpy = "*"
 scikit-learn = "*"
 torch = "*"
 torchvision = "*"
+torch-summary = "*"
+pandas = "*"
 
 [dev-packages]
 pylint = "*"

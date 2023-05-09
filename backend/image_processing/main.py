@@ -26,6 +26,15 @@ from .border_detection import (
     canny,
 )
 
+def process_image(img):
+    processed_img, _bhf = dull_razor(img)
+    blurred_image = median_filtering(processed_img)
+    segmented_image = otsu_method(blurred_image)
+    enclosed_image = closing(segmented_image)
+    enclosed_image = opening(invert_bitwise(enclosed_image))
+    segmented_color = and_bitwise(blurred_image, enclosed_image)
+    return segmented_color
+
 
 def main():
     for i, image_metadata in enumerate(TEST_IMAGES):
