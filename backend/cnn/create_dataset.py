@@ -33,12 +33,12 @@ def create_image_object(img,is_melanoma):
 
 def read_melanoma_dataset(files,is_melanoma):
   images = []
-  for img in files:
+  for img in files[0:100]:
     images.append(create_image_object(img,is_melanoma))
   return images
 
 def read_ham_dataset(ham_filenames,files):
-  for img in files:
+  for img in files[0:100]:
     _,name = os.path.split(img)
     name = name.split('.')[0]
     ham_filenames[name] = create_image_object(img,False)

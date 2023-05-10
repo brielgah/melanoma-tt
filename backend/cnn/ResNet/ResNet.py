@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -5,7 +6,7 @@ import torch.optim as optim
 from torchvision import transforms, datasets
 from torchsummary import summary
 from torch.utils.data import Dataset, DataLoader, random_split
-
+from MelanomaDataset import MelanomaDataset
 
 class block(nn.Module):
     def __init__(
@@ -147,55 +148,125 @@ def ResNet101(img_channel=3, num_classes=1000):
 def ResNet152(img_channel=3, num_classes=1000):
     return ResNet(block, [3, 8, 36, 3], img_channel, num_classes)
 
+def dataloader_melanoma():
+    train_dataset = MelanomaDataset(os.getenv('TRAIN_CSV'))
+    test_dataset = MelanomaDataset(os.getenv('TEST_CSV'))
 
-def dataloader_cifar():
-    transform = transforms.Compose([transforms.ToTensor(),
-                                    transforms.Normalize(mean=[0.5], std=[0.5])])
-            
-    # Input Data in Local Machine
-    # train_dataset = datasets.CIFAR10('../input_data', train=True, download=True, transform=transform)
-    # test_dataset = datasets.CIFAR10('../input_data', train=False, download=True, transform=transform)
-    
-    # Input Data in Google Drive
-    train_dataset = datasets.CIFAR10('./', train=True, download=True, transform=transform)
-    test_dataset = datasets.CIFAR10('./', train=False, download=True, transform=transform)
-
-    # Split dataset into training set and validation set.
-    train_dataset, val_dataset = random_split(train_dataset, (45000, 5000))
-    
-    print(type(train_dataset))
-    print(type(train_dataset[0][0]))
-    print(train_dataset[0][1])
-
+    train_dataset, val_dataset = random_split(train_dataset,[0.8, 0.2])  
+   
     print("Image shape of a random sample image : {}".format(train_dataset[0][0].numpy().shape), end = '\n\n')
     
     print("Training Set:   {} images".format(len(train_dataset)))
     print("Validation Set:   {} images".format(len(val_dataset)))
     print("Test Set:       {} images".format(len(test_dataset)))
     
-    BATCH_SIZE = 32
+    BATCH_SIZE = 5
 
-    # Generate dataloader
+    # Generate dataloaderss
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=10000, shuffle=True)
     
     return train_loader, val_loader, test_loader
 
+def train_model(train_loader,val_loader,test_loader,model,device):
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    EPOCHS = 15
+    train_samples_num = len(train_loader)
+    val_samples_num = len(val_loader)
+    train_costs, val_costs = [], []
+    
+    #Training phase.    
+    for epoch in range(EPOCHS):
+
+        train_running_loss = 0
+        correct_train = 0
+        
+        model.train()
+        
+        for inputs, labels in train_loader:
+            inputs, labels = inputs.to(device), labels.to(device)
+            
+            """ for every mini-batch during the training phase, we typically want to explicitly set the gradients 
+            to zero before starting to do backpropragation """
+            optimizer.zero_grad()
+            
+            # Start the forward pass
+            prediction = model(inputs)
+                        
+            loss = criterion(prediction, labels)
+          
+            # do backpropagation and update weights with step()
+            loss.backward()         
+            optimizer.step()
+            
+            # print('outputs on which to apply torch.max ', prediction)
+            # find the maximum along the rows, use dim=1 to torch.max()
+            _, predicted_outputs = torch.max(prediction.data, 1)
+            
+            # Update the running corrects 
+            correct_train += (predicted_outputs == labels).float().sum().item()
+            
+            ''' Compute batch loss
+            multiply each average batch loss with batch-length. 
+            The batch-length is inputs.size(0) which gives the number total images in each batch. 
+            Essentially I am un-averaging the previously calculated Loss '''
+            train_running_loss += (loss.data.item() * inputs.shape[0])
+
+
+        train_epoch_loss = train_running_loss / train_samples_num
+        
+        train_costs.append(train_epoch_loss)
+        
+        train_acc =  correct_train / train_samples_num
+
+        # Now check trained weights on the validation set
+        val_running_loss = 0
+        correct_val = 0
+      
+        model.eval()
+    
+        with torch.no_grad():
+            for inputs, labels in val_loader:
+                inputs, labels = inputs.to(device), labels.to(device)
+
+                # Forward pass.
+                prediction = model(inputs)
+
+                # Compute the loss.
+                loss = criterion(prediction, labels)
+
+                # Compute validation accuracy.
+                _, predicted_outputs = torch.max(prediction.data, 1)
+                correct_val += (predicted_outputs == labels).float().sum().item()
+
+            # Compute batch loss.
+            val_running_loss += (loss.data.item() * inputs.shape[0])
+
+            val_epoch_loss = val_running_loss / val_samples_num
+            val_costs.append(val_epoch_loss)
+            val_acc =  correct_val / val_samples_num
+        
+        info = "[Epoch {}/{}]: train-loss = {:0.6f} | train-acc = {:0.3f} | val-loss = {:0.6f} | val-acc = {:0.3f}"
+        
+        print(info.format(epoch+1, EPOCHS, train_epoch_loss, train_acc, val_epoch_loss, val_acc))
+        
+        #torch.save(model.state_dict(), '/content/checkpoint_gpu_{}'.format(epoch + 1)) 
+                                                                
+    #torch.save(model.state_dict(), '/content/resnet-56_weights_gpu')  
+        
+    return train_costs, val_costs
+
+
 
 def test():
-    model = ResNet101(img_channel=3, num_classes=1000)
+    model = ResNet101(img_channel=3, num_classes=2)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     y = model(torch.randn(4, 3, 224, 224)).to(device)
     summary(model)
-    train_loader, val_loader, test_loader = dataloader_cifar()
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
-
-
-
-
-
+    train_loader, val_loader, test_loader = dataloader_melanoma()
+    train_costs, val_costs = train_model(train_loader,val_loader,test_loader,model,device)
 
 test()
 
