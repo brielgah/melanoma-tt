@@ -8,6 +8,10 @@ opencv-python = "*"
 scikit-image = "*"
 numpy = "*"
 scikit-learn = "*"
+torch = "*"
+torchvision = "*"
+torch-summary = "*"
+pandas = "*"
 
 [dev-packages]
 pylint = "*"
@@ -20,5 +24,6 @@ python_version = "3.10"
 [scripts]
 lint = "bash ./lint.sh"
 imgprc = "python3 -m image_processing.main"
+dataset = "python3 -m cnn.create_dataset"
 test = "pytest"
 autolint = "autopep8 --in-place --recursive ."
