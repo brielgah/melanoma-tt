@@ -33,12 +33,12 @@ def create_image_object(img,is_melanoma):
 
 def read_melanoma_dataset(files,is_melanoma):
   images = []
-  for img in files[0:100]:
+  for img in files:
     images.append(create_image_object(img,is_melanoma))
   return images
 
 def read_ham_dataset(ham_filenames,files):
-  for img in files[0:100]:
+  for img in files:
     _,name = os.path.split(img)
     name = name.split('.')[0]
     ham_filenames[name] = create_image_object(img,False)
@@ -72,7 +72,9 @@ def process_dataset():
     if "skin-lesions" in root and files:
       paths = [os.path.join(root,filename) for filename in files]
       melanoma_dataset += read_melanoma_dataset(paths, "melanoma" in root)
+  print(f"Melanoma dataset length {len(melanoma_dataset)}")
   ham_dataset = label_ham_dataset(ham_filenames,ham_csv)
+  print(f"HAM dataset length {len(ham_dataset)}")
   random.shuffle(melanoma_dataset)
   random.shuffle(ham_dataset)
   dataset = ham_dataset + melanoma_dataset
