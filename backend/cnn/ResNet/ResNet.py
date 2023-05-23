@@ -6,7 +6,7 @@ import torch.optim as optim
 from torchvision import transforms, datasets
 from torchsummary import summary
 from torch.utils.data import Dataset, DataLoader, random_split
-from MelanomaDataset import MelanomaDataset
+from .MelanomaDataset import MelanomaDataset
 
 class block(nn.Module):
     def __init__(

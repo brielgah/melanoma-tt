@@ -7,7 +7,7 @@ class ImageMetadata:
     name: str
     size: int
     has_segmented_image: bool
-    is_melanoma: str = False
+    is_melanoma: bool = False
     segmented: str = ''
 
     def get_path(self, get_segmented: bool = False):
