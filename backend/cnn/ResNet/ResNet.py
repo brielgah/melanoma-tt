@@ -160,7 +160,7 @@ def dataloader_melanoma():
     print("Validation Set:   {} images".format(len(val_dataset)))
     print("Test Set:       {} images".format(len(test_dataset)))
     
-    BATCH_SIZE = 5
+    BATCH_SIZE = 100
 
     # Generate dataloaderss
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
@@ -172,7 +172,7 @@ def dataloader_melanoma():
 def train_model(train_loader,val_loader,test_loader,model,device):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
-    EPOCHS = 15
+    EPOCHS = 10
     train_samples_num = len(train_loader)
     val_samples_num = len(val_loader)
     train_costs, val_costs = [], []
@@ -252,12 +252,27 @@ def train_model(train_loader,val_loader,test_loader,model,device):
         
         print(info.format(epoch+1, EPOCHS, train_epoch_loss, train_acc, val_epoch_loss, val_acc))
         
-        #torch.save(model.state_dict(), '/content/checkpoint_gpu_{}'.format(epoch + 1)) 
+        torch.save(model.state_dict(), os.path.join(os.getenv('DATASET_PATH'),str(epoch+1))) 
                                                                 
-    #torch.save(model.state_dict(), '/content/resnet-56_weights_gpu')  
+    torch.save(model.state_dict(), os.path.join(os.getenv('DATASET_PATH'),'model_weights_gpu'))  
         
     return train_costs, val_costs
 
+def test_model(model,test_loader):
+    test_samples_num = len(test_loader)
+    correct = 0 
+    model.eval()
+    with  torch.no_grad():
+        for inputs, labels in test_loader:
+            inputs, labels = inputs.to(device), labels.to(device)
+            # Make predictions.
+            prediction = model(inputs)
+            # Retrieve predictions indexes.
+            _, predicted_class = torch.max(prediction.data, 1)
+            # Compute number of correct predictions.
+            correct += (predicted_class == labels).float().sum().item()
+    test_accuracy = correct / test_samples_num
+    print('Test accuracy: {}'.format(test_accuracy))
 
 
 def test():
@@ -267,7 +282,7 @@ def test():
     summary(model)
     train_loader, val_loader, test_loader = dataloader_melanoma()
     train_costs, val_costs = train_model(train_loader,val_loader,test_loader,model,device)
-
+    test_model(model, test_loader)
 test()
 
 # ref https://github.com/aladdinpersson/Machine-Learning-Collection
