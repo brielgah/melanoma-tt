@@ -8,6 +8,8 @@ from torchsummary import summary
 from torch.utils.data import Dataset, DataLoader, random_split
 from MelanomaDataset import MelanomaDataset
 
+MODEL = "model_weights"
+
 class block(nn.Module):
     def __init__(
         self, in_channels, intermediate_channels, identity_downsample=None, stride=1
@@ -283,6 +285,14 @@ def test():
     train_loader, val_loader, test_loader = dataloader_melanoma()
     train_costs, val_costs = train_model(train_loader,val_loader,test_loader,model,device)
     test_model(model, test_loader)
-test()
+
+if os.path.exists(os.path.join(os.getenv('DATASET_PATH'),MODEL)):
+    print("Loading model")
+    model = ResNet101(img_channel=3, num_classes=2)
+    model.load_state_dict(torch.load(os.path.join(os.getenv('DATASET_PATH'),MODEL),map_location=torch.device('cpu')))
+    train_loader, val_loader, test_loader = dataloader_melanoma()
+    test_model(model, test_loader)
+else:
+    test()
 
 # ref https://github.com/aladdinpersson/Machine-Learning-Collection
