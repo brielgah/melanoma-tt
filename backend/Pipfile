@@ -12,6 +12,9 @@ torch = "*"
 torchvision = "*"
 torch-summary = "*"
 pandas = "*"
+seaborn = "*"
+tk = "*"
+tkintertable = "*"
 
 [dev-packages]
 pylint = "*"

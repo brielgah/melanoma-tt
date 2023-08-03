@@ -8,6 +8,12 @@ from torchsummary import summary
 from torch.utils.data import Dataset, DataLoader, random_split
 from MelanomaDataset import MelanomaDataset
 
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import seaborn as sn
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
 MODEL = "model_weights"
 
 class block(nn.Module):
@@ -162,12 +168,12 @@ def dataloader_melanoma():
     print("Validation Set:   {} images".format(len(val_dataset)))
     print("Test Set:       {} images".format(len(test_dataset)))
     
-    BATCH_SIZE = 100
+    BATCH_SIZE = 5
 
     # Generate dataloaderss
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=10000, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=True)
     
     return train_loader, val_loader, test_loader
 
@@ -260,39 +266,61 @@ def train_model(train_loader,val_loader,test_loader,model,device):
         
     return train_costs, val_costs
 
-def test_model(model,test_loader):
+def test_model(model,test_loader,device):
     test_samples_num = len(test_loader)
     correct = 0 
     model.eval()
+    y_pred = []
+    y_true = []
     with  torch.no_grad():
+        batch = 0
         for inputs, labels in test_loader:
+            print(f"Batch {batch}")
             inputs, labels = inputs.to(device), labels.to(device)
             # Make predictions.
             prediction = model(inputs)
+            output = (torch.max(torch.exp(prediction), 1)[1]).data.cpu().numpy()
+            y_pred.extend(output)
+            labels_temp = labels.data.cpu().numpy()
+            y_true.extend(labels_temp)
             # Retrieve predictions indexes.
             _, predicted_class = torch.max(prediction.data, 1)
             # Compute number of correct predictions.
             correct += (predicted_class == labels).float().sum().item()
+            batch += 1
     test_accuracy = correct / test_samples_num
     print('Test accuracy: {}'.format(test_accuracy))
+    classes = [0,1]
+    cf_matrix = confusion_matrix(y_true, y_pred)
+    df_cm = pd.DataFrame(cf_matrix, classes, classes)
+    plt.figure(figsize = (12,7))
+    sn.heatmap(df_cm, annot=True)
+    plt.xlabel("prediction")
+    plt.ylabel("label")
+    plt.show()
+    plt.savefig(os.path.join(os.getenv('DATASET_PATH'),'output.png'))
 
 
 def test():
     model = ResNet101(img_channel=3, num_classes=2)
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    y = model(torch.randn(4, 3, 224, 224)).to(device)
     summary(model)
     train_loader, val_loader, test_loader = dataloader_melanoma()
     train_costs, val_costs = train_model(train_loader,val_loader,test_loader,model,device)
-    test_model(model, test_loader)
+    test_model(model, test_loader,device)
 
-if os.path.exists(os.path.join(os.getenv('DATASET_PATH'),MODEL)):
-    print("Loading model")
-    model = ResNet101(img_channel=3, num_classes=2)
-    model.load_state_dict(torch.load(os.path.join(os.getenv('DATASET_PATH'),MODEL),map_location=torch.device('cpu')))
-    train_loader, val_loader, test_loader = dataloader_melanoma()
-    test_model(model, test_loader)
-else:
-    test()
+def main():
+    if os.path.exists(os.path.join(os.getenv('DATASET_PATH'),MODEL)):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        print("Loading model")
+        model = ResNet101(img_channel=3, num_classes=2)
+        model.load_state_dict(torch.load(os.path.join(os.getenv('DATASET_PATH'),MODEL),map_location=torch.device('cpu')))
+        summary(model)
+        train_loader, val_loader, test_loader = dataloader_melanoma()
+        test_model(model, test_loader,device)
+    else:
+        test()
 
+if __name__ == '__main__':
+    main()
 # ref https://github.com/aladdinpersson/Machine-Learning-Collection

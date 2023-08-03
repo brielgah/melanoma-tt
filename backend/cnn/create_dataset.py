@@ -99,8 +99,14 @@ def write_csv(dataset,filename):
   with open(filename,'+w') as csv_file:
     writer = csv.writer(csv_file)
     writer.writerow(HEADER_CSV)
+    melanoma = 0
     for img in dataset:
-      writer.writerow([img.metadata.name,img.metadata.path,int(img.metadata.is_melanoma)])
+      row = [img.metadata.name,img.metadata.path,int(img.metadata.is_melanoma)]
+      if img.metadata.is_melanoma:
+        melanoma += 1
+        print(row)
+      writer.writerow(row)
+    print(melanoma)
 
 def build_dataset():
   global dataset
