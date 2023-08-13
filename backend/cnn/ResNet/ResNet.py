@@ -168,7 +168,7 @@ def dataloader_melanoma():
     print("Validation Set:   {} images".format(len(val_dataset)))
     print("Test Set:       {} images".format(len(test_dataset)))
     
-    BATCH_SIZE = 5
+    BATCH_SIZE = 20
 
     # Generate dataloaderss
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
@@ -178,6 +178,7 @@ def dataloader_melanoma():
     return train_loader, val_loader, test_loader
 
 def train_model(train_loader,val_loader,test_loader,model,device):
+    torch.cuda.empty_cache()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
     EPOCHS = 10
@@ -261,6 +262,7 @@ def train_model(train_loader,val_loader,test_loader,model,device):
         print(info.format(epoch+1, EPOCHS, train_epoch_loss, train_acc, val_epoch_loss, val_acc))
         
         torch.save(model.state_dict(), os.path.join(os.getenv('DATASET_PATH'),str(epoch+1))) 
+        torch.cuda.empty_cache()
                                                                 
     torch.save(model.state_dict(), os.path.join(os.getenv('DATASET_PATH'),'model_weights_gpu'))  
         
@@ -302,9 +304,13 @@ def test_model(model,test_loader,device):
 
 
 def test():
+    torch.cuda.empty_cache()
     model = ResNet101(img_channel=3, num_classes=2)
+    if torch.cuda.is_available():
+        model.cuda()
+        torch.cuda.empty_cache()
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    summary(model)
+    #summary(model)
     train_loader, val_loader, test_loader = dataloader_melanoma()
     train_costs, val_costs = train_model(train_loader,val_loader,test_loader,model,device)
     test_model(model, test_loader,device)
@@ -315,7 +321,7 @@ def main():
         print("Loading model")
         model = ResNet101(img_channel=3, num_classes=2)
         model.load_state_dict(torch.load(os.path.join(os.getenv('DATASET_PATH'),MODEL),map_location=torch.device('cpu')))
-        summary(model)
+        #summary(model)
         train_loader, val_loader, test_loader = dataloader_melanoma()
         test_model(model, test_loader,device)
     else:

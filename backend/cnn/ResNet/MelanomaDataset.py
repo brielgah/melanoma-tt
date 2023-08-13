@@ -5,8 +5,8 @@ import pandas as pd
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader, random_split
 from image_processing import main
-from PIL import Image, ImageTk
-import tkinter as tk
+#from PIL import Image, ImageTk
+#import tkinter as tk
 import cv2
 np.random.seed(0)
 torch.manual_seed(0)
@@ -39,7 +39,7 @@ class MelanomaDataset(Dataset):
         #load label        
         return tensor, label
     
-    def show_segmented(self,idx):
+"""     def show_segmented(self,idx):
         image_window = tk.Tk()
         name,path,label = self.files[idx]
         img = cv2.imread(os.path.join(path,name),cv2.IMREAD_COLOR)
@@ -53,4 +53,4 @@ class MelanomaDataset(Dataset):
         panel.pack(side="bottom", fill="both", expand="yes")
         image_window.mainloop()
 
-    
+     """
