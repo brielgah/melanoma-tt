@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "Melanoma App",
+    "slug": "melanoma_app",
+    "version": "1.0.0",
+    "platforms": [
+      "android",
+      "web"
+    ],
+    "orientation": "portrait",
+    "primaryColor": "#265380",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "melanoma-app",
+    "androidNavigationBar": {
+      "barStyle": "dark-content"
+    },
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#fbfbfb"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA"
+      ],
+      "package": "com.danielmontes.melanoma_app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-image-picker",
+      "expo-camera"
+    ],
+    "experiments": {
+      "tsconfigPaths": true,
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "9b5cea28-f717-465e-87f9-644590a1e49d"
+      }
+    }
+  }
+}
