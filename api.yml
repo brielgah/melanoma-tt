@@ -1,0 +1,220 @@
+openapi: '3.0.2'
+info:
+  title: Melanoma API
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1 # TODO: update to actual url
+paths:
+
+  # /user: # create user
+  # /user/{idUser}: # update, delete and get user
+  # /user/{idUser}/login: # log user
+  # /user/{idUser}/reminder/{lesionId}: # add reminder to user
+  # /user/{idUser}/associate/{idUserToAssociate}: # associate two users
+  # /user/{idUser}/share/{idUserToAssociate}/{lesionId}: # share user's lesion to another user
+  # /compare/{prevPhotoId}/{afterPhotoId}: # compare two photos
+  # /prediagnose: # prediagnose a photo
+
+  /lesion:
+    post:
+      description: Creates a new lesion asociated to an user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/lesion'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+
+  /lesion/{id}:
+    parameters:
+      - $ref: '#/components/parameters/idLesion'
+    get:
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+          description: The lesion is returnd successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/lesion'
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/lesion'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+    delete:
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+  
+  /lesion/{idLesion}/photo:
+    parameters:
+      - $ref: '#/components/parameters/idLesion'
+    post:
+      description: Adds a new photo to the specified lesion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/photo'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+
+  /lesion/{idLesion}/photo/{idPhoto}:
+    parameters:
+      - $ref: '#/components/parameters/idLesion'
+      - $ref: '#/components/parameters/idPhoto'
+    get:
+      responses:
+        '200':
+          description: The photo is returnd successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/photos'
+          $ref: "#/components/responses/OK"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/photo'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+    delete:
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+
+
+components:
+
+  parameters:
+    idLesion:
+      name: id,
+      in: path
+      required: true
+      schema:
+        type: integer
+    idPhoto:
+      name: id,
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  responses:
+    'OK':
+      description: 'Succesful request'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiResult'
+    'Unauthorized':
+      description: 'User is not authorized to perform the action'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiResult'
+    'BadRequest':
+      description: 'Request is not valid'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiResult'
+    'NotFound':
+      description: 'The requested resource does not exist'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiResult'
+
+  schemas:
+    apiResult:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+    user:
+      type: object
+      properties:
+        id:
+          type: number
+        username:
+          type: string
+    photo:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        dateOfCreation:
+          type: number
+        description:
+          type: string
+        url:
+          type: string
+    lesion:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/photo'
+        sharedWithUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/user'
+        owner:
+          $ref: '#/components/schemas/user'
