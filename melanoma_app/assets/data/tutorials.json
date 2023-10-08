@@ -1,0 +1,102 @@
+[
+	{
+		"title": "Notificaciones",
+		"icon": "notifications",
+		"color": "#a9e2f0",
+		"steps": [
+			{
+				"title": "Paso 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#1573fe",
+				"image": "notification"
+			},
+			{
+				"title": "Paso 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#1573fe",
+				"image": "notification"
+			},
+			{
+				"title": "Paso 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#1573fe",
+				"image": "notification"
+			}
+		]
+	},
+	{
+		"title": "Captura de imágenes",
+		"icon": "photos",
+		"color": "#91d474",
+		"steps": [
+			{
+				"title": "Paso 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#049c6b",
+				"image": "notification"
+			},
+			{
+				"title": "Paso 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#049c6b",
+				"image": "notification"
+			},
+			{
+				"title": "Paso 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#049c6b",
+				"image": "notification"
+			}
+		]
+	},
+	{
+		"title": "Seguimiento",
+		"icon": "followup",
+		"color": "#deb6c9",
+		"steps": [
+			{
+				"title": "Paso 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#7c4770",
+				"image": "notification"
+			},
+			{
+				"title": "Paso 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#7c4770",
+				"image": "notification"
+			},
+			{
+				"title": "Paso 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#7c4770",
+				"image": "notification"
+			}
+		]
+	},
+	{
+		"title": "Prediagnóstico",
+		"icon": "prediagnosis",
+		"color": "#f7b552",
+		"steps": [
+			{
+				"title": "Paso 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#945d0a",
+				"image": "notification"
+			},
+			{
+				"title": "Paso 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#945d0a",
+				"image": "notification"
+			},
+			{
+				"title": "Paso 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"backgroundColor": "#945d0a",
+				"image": "notification"
+			}
+		]
+	}
+]
