@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/photos'
+                $ref: '#/components/schemas/photo'
           $ref: "#/components/responses/OK"
         '404':
           $ref: "#/components/responses/NotFound"
