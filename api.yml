@@ -70,7 +70,7 @@ paths:
           $ref: "#/components/responses/OK"
         '401':
           $ref: "#/components/responses/Unauthorized"
-  
+
   /lesion/{idLesion}/photo:
     parameters:
       - $ref: '#/components/parameters/idLesion'
@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/photos'
+                $ref: '#/components/schemas/photo'
           $ref: "#/components/responses/OK"
         '404':
           $ref: "#/components/responses/NotFound"
@@ -130,6 +130,156 @@ paths:
         '401':
           $ref: "#/components/responses/Unauthorized"
 
+  /user:
+    post:
+      description: Creates a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+
+  /user/{idUser}:
+    parameters:
+      - $ref: '#/components/parameters/idUser'
+    get:
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+          description: The user is returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+    delete:
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+
+  /user/{idUser}/reminder:
+    parameters:
+      - $ref: '#/components/parameters/idUser'
+    post:
+      description: Adds a new reminder to the specified user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reminder'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+
+  /user/{idUser}/reminder/{idReminder}:
+    parameters:
+      - $ref: '#/components/parameters/idUser'
+      - $ref: '#/components/parameters/idReminder'
+    post:
+      description: The reminder is returned successfuly
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reminder'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reminder'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+    delete:
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+
+  /user/{idUser}/reminder/{idLesion}:
+    parameters:
+      - $ref: '#/components/parameters/idUser'
+      - $ref: '#/components/parameters/idLesion'
+    patch:
+      description: Adds a reminder for the lesion to the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reminder'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+
+  /user/{idUser}/associate/{idUserToAssociate}:
+    parameters:
+      - $ref: '#/components/parameters/idUser'
+      - $ref: '#/components/parameters/idUserToAssociate'
+    patch:
+      description: Associates two users
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
 
 components:
 
@@ -142,6 +292,25 @@ components:
         type: integer
     idPhoto:
       name: id,
+      in: path
+      required: true
+      schema:
+        type: integer
+    idUser:
+      name: idUser
+      in: path
+      required: true
+      schema:
+        type: integer
+    idUserToAssociate:
+      name: idUserToAssociate
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    idReminder:
+      name: idReminder
       in: path
       required: true
       schema:
@@ -188,6 +357,10 @@ components:
           type: number
         username:
           type: string
+        reminders:
+          type: array
+          items:
+            $ref: '#/components/schemas/reminder'
     photo:
       type: object
       properties:
@@ -218,3 +391,14 @@ components:
             $ref: '#/components/schemas/user'
         owner:
           $ref: '#/components/schemas/user'
+    reminder:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        date:
+          type: string
+        lesion:
+          $ref: '#/components/schemas/lesion'
