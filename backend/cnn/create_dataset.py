@@ -77,9 +77,19 @@ def process_dataset():
   print(f"HAM dataset length {len(ham_dataset)}")
   random.shuffle(melanoma_dataset)
   random.shuffle(ham_dataset)
-  dataset = ham_dataset + melanoma_dataset
-  random.shuffle(melanoma_dataset)
-  return dataset
+  is_melanoma = []
+  no_melanoma = []
+  for image in melanoma_dataset:
+	  if image.metadata.is_melanoma:
+		  is_melanoma.append(image)
+	  else:
+		  no_melanoma.append(image)
+  for image in ham_dataset:
+	  if image.metadata.is_melanoma:
+		  is_melanoma.append(image)
+	  else:
+		  no_melanoma.append(image)
+  return is_melanoma, no_melanoma
 
 def remove_duplicates(dataset):
   uniques = {}
@@ -99,14 +109,24 @@ def write_csv(dataset,filename):
   with open(filename,'+w') as csv_file:
     writer = csv.writer(csv_file)
     writer.writerow(HEADER_CSV)
+    melanoma = 0
     for img in dataset:
-      writer.writerow([img.metadata.name,img.metadata.path,int(img.metadata.is_melanoma)])
+      row = [img.metadata.name,img.metadata.path,int(img.metadata.is_melanoma)]
+      if img.metadata.is_melanoma:
+        melanoma += 1
+        print(row)
+      writer.writerow(row)
+    print(melanoma)
 
 def build_dataset():
   global dataset
-  dataset = process_dataset()
-  dataset_uniques = remove_duplicates(dataset)
-  train, test, train_label, y_label = divide_dataset(dataset_uniques)
+  is_melanoma, no_melanoma = process_dataset()
+  is_melanoma = remove_duplicates(is_melanoma)
+  no_melanoma = remove_duplicates(no_melanoma)
+  train = is_melanoma[0:int(len(is_melanoma)*0.8)] + no_melanoma[0:int(len(no_melanoma)*0.8)]
+  test = is_melanoma[int(len(is_melanoma)*0.8):] + no_melanoma[int(len(no_melanoma)*0.8):]
+  random.shuffle(train)
+  random.shuffle(test)
   write_csv(train,TRAIN_CSV_FILE)
   write_csv(test,TEST_CSV_FILE)
 
