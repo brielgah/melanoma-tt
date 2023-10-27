@@ -7,10 +7,14 @@ let blobServiceClient: BlobServiceClient | null = null;
 let imageContainerClient: ContainerClient | null = null;
 
 const createBlobServiceClient = async () => {
-  if (blobServiceClient !== null) { return blobServiceClient; }
+  if (blobServiceClient !== null) {
+    return blobServiceClient;
+  }
   const secrets = await getSecrets();
   const connectionString = secrets.get('blobStorageConnectionString');
-  if (connectionString === undefined) throw new Error('Blob connection string is undefined');
+  if (connectionString === undefined) {
+    throw new Error('Blob connection string is undefined');
+  }
   return BlobServiceClient.fromConnectionString(connectionString);
 };
 

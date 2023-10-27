@@ -56,8 +56,8 @@ function onError(error: NodeJS.ErrnoException) {
  * Event listener for HTTP server "listening" event.
  */
 async function onListening() {
+function onListening() {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr?.port}`;
   log.debug(`Listening on ${bind}`);
-  await getSequelize();
 }
