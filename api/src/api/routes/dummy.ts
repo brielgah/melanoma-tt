@@ -37,6 +37,11 @@ dummyRouter.get('/:id', (async (req, res, next) => {
 
   const sql = await getSequelize();
 
+  const file = 'asdasdasdadasdads';
+  await uploadImage({ name: 'test', data: file, ext: 'jpg' });
+  const download = await downloadImage('test.jpg');
+  console.log(download);
+
   try {
     const result = await getDummybyId(options);
     res.status(result.status).send(result.data);
