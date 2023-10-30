@@ -1,14 +1,8 @@
-<<<<<<< HEAD
-export default interface Image {
-  name: string;
-  ext: string;
-  data: string;
-}
-=======
 import { AutoIncrement, BelongsTo, Column, CreatedAt, DeletedAt, HasMany, Model, PrimaryKey, Table, UpdatedAt } from 'sequelize-typescript';
-import {User} from './user';
+import { User } from './user';
+
 @Table
-export class Image extends Model {
+export class Reminder extends Model {
 
   @AutoIncrement
   @PrimaryKey
@@ -28,4 +22,3 @@ export class Image extends Model {
   user!:User;
 
 }
->>>>>>> ba1630f (Add ORM)

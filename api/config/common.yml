@@ -1,0 +1,39 @@
+defaults: &defaults
+  api:
+    port: 3000
+
+  logger:
+    name: Melanoma API
+    level: debug
+    levels:
+      trace:
+      debug: STDOUT
+      info:
+      warn:
+      error: STDERR
+      fatal:
+
+  azure:
+    keyvault:
+      name: melanoma-tt-kv
+      clientSecret: CuL8Q~5bywi3VDFZXw7EckA1IfUXwLjoxX2t5aSa
+      clientId: ebf395b6-3bc4-40a5-b45c-1fba0d7b20f3
+      tenantId: 2f9b0147-150b-4dcd-93f5-3eec158d519f
+    applicationinsights:
+      connectionString: InstrumentationKey=adbe05b3-ae1f-45df-b3e5-ee822dd1e792;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/
+
+development:
+  <<: *defaults
+
+production:
+  <<: *defaults
+
+  logger:
+    level: info
+    levels:
+      trace:
+      debug: STDOUT
+      info: ./log/info.log
+      warn: ./log/warn.log
+      error: ./log/error.log
+      fatal: ./log/fatal.log
