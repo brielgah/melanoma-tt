@@ -16,11 +16,11 @@ defaults: &defaults
   azure:
     keyvault:
       name: melanoma-tt-kv
-      clientSecret:
-      clientId:
-      tenantId:
+      clientSecret: CuL8Q~5bywi3VDFZXw7EckA1IfUXwLjoxX2t5aSa
+      clientId: ebf395b6-3bc4-40a5-b45c-1fba0d7b20f3
+      tenantId: 2f9b0147-150b-4dcd-93f5-3eec158d519f
     applicationinsights:
-      connectionString:
+      connectionString: InstrumentationKey=adbe05b3-ae1f-45df-b3e5-ee822dd1e792;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/
 
 development:
   <<: *defaults
