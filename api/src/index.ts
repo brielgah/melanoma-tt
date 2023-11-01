@@ -13,11 +13,13 @@ const server = http.createServer(app);
 server.on('error', onError);
 server.on('listening', onListening);
 
-getSequelize().then(() => {
-  server.listen(port);
-}).catch((error) => {
-  log.error(error, 'Cannot start server');
-});
+getSequelize()
+  .then(() => {
+    server.listen(port);
+  })
+  .catch((error) => {
+    log.error(error, 'Cannot start server');
+  });
 
 function normalizePort(val: string) {
   const port = parseInt(val, 10);
