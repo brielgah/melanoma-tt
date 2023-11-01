@@ -35,7 +35,7 @@ dummyRouter.get('/:id', (async (req, res, next) => {
     body: req.body,
   };
 
-  const sql = await getSequelize();
+  await getSequelize();
 
   const file = 'asdasdasdadasdads';
   await uploadImage({ name: 'test', data: file, ext: 'jpg' });

@@ -1,4 +1,5 @@
 import {
+  AfterFind,
   AutoIncrement,
   BelongsTo,
   Column,
@@ -41,4 +42,10 @@ export default class Photo extends Model {
 
   @Column(DataType.VIRTUAL)
     image: Image;
+
+  @AfterFind
+  static async setImage(instance: Photo) {
+    const image = await downloadImage(instance.blobName);
+    instance.image = image;
+  }
 }
