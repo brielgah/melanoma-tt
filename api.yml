@@ -3,7 +3,7 @@ info:
   title: Melanoma API
   version: '1.0'
 servers:
-  - url: https://api.server.test/v1 # TODO: update to actual url
+  - url: http://localhost:3000 # TODO: update to actual url
 paths:
 
   # /user: # create user
@@ -32,13 +32,12 @@ paths:
         '400':
           $ref: "#/components/responses/BadRequest"
 
-  /lesion/{id}:
+  /lesion/{idLesion}:
     parameters:
       - $ref: '#/components/parameters/idLesion'
     get:
       responses:
         '200':
-          $ref: "#/components/responses/OK"
           description: The lesion is returnd successfully
           content:
             application/json:
@@ -102,7 +101,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/photo'
-          $ref: "#/components/responses/OK"
         '404':
           $ref: "#/components/responses/NotFound"
         '401':
@@ -153,7 +151,6 @@ paths:
     get:
       responses:
         '200':
-          $ref: "#/components/responses/OK"
           description: The user is returned successfully
           content:
             application/json:
@@ -186,9 +183,10 @@ paths:
         '401':
           $ref: "#/components/responses/Unauthorized"
 
-  /user/{idUser}/reminder:
+  /user/{idUser}/reminder/{idLesion}:
     parameters:
       - $ref: '#/components/parameters/idUser'
+      - $ref: '#/components/parameters/idLesion'
     post:
       description: Adds a new reminder to the specified user
       requestBody:
@@ -209,21 +207,6 @@ paths:
     parameters:
       - $ref: '#/components/parameters/idUser'
       - $ref: '#/components/parameters/idReminder'
-    post:
-      description: The reminder is returned successfuly
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/reminder'
-      responses:
-        '200':
-          $ref: "#/components/responses/OK"
-        '404':
-          $ref: "#/components/responses/NotFound"
-        '401':
-          $ref: "#/components/responses/Unauthorized"
     patch:
       requestBody:
         required: true
@@ -247,26 +230,6 @@ paths:
         '401':
           $ref: "#/components/responses/Unauthorized"
 
-  /user/{idUser}/reminder/{idLesion}:
-    parameters:
-      - $ref: '#/components/parameters/idUser'
-      - $ref: '#/components/parameters/idLesion'
-    patch:
-      description: Adds a reminder for the lesion to the user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/reminder'
-      responses:
-        '200':
-          $ref: "#/components/responses/OK"
-        '401':
-          $ref: "#/components/responses/Unauthorized"
-        '400':
-          $ref: "#/components/responses/BadRequest"
-
   /user/{idUser}/associate/{idUserToAssociate}:
     parameters:
       - $ref: '#/components/parameters/idUser'
@@ -285,13 +248,13 @@ components:
 
   parameters:
     idLesion:
-      name: id,
+      name: idLesion
       in: path
       required: true
       schema:
         type: integer
     idPhoto:
-      name: id,
+      name: idPhoto
       in: path
       required: true
       schema:
@@ -308,7 +271,6 @@ components:
       required: true
       schema:
         type: integer
-
     idReminder:
       name: idReminder
       in: path
@@ -361,6 +323,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/reminder'
+    image:
+      type: object
+      properties:
+        name:
+          type: string
+        data:
+          type: string
+        ext:
+          type: string
     photo:
       type: object
       properties:
@@ -372,8 +343,10 @@ components:
           type: number
         description:
           type: string
-        url:
+        blobName:
           type: string
+        image:
+          $ref: '#/components/schemas/image'
     lesion:
       type: object
       properties:
@@ -396,9 +369,7 @@ components:
       properties:
         id:
           type: number
-        name:
+        targetTimeStamp:
           type: string
-        date:
-          type: string
-        lesion:
-          $ref: '#/components/schemas/lesion'
+        lesionID:
+          type: number

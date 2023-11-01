@@ -2,4 +2,4 @@
 
 export default interface Dummy {
   name: string;
-};
+}
