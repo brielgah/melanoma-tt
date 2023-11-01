@@ -5,7 +5,7 @@ import log from '../../lib/logger';
 // add in src/services the logic handler for each http request
 // perform business logic, database queries, etc. here
 
-type DummyRequestOptions = RequestOptions<Dummy, { id: number; }>;
+type DummyRequestOptions = RequestOptions<Dummy, { id: number }>;
 
 export const postDummy = async (options: DummyRequestOptions) => {
   // Implement your business logic here...
@@ -27,7 +27,7 @@ export const postDummy = async (options: DummyRequestOptions) => {
   log.debug('request ok');
   return {
     status: 200,
-    data: 'postDummy ok!'
+    data: 'postDummy ok!',
   };
 };
 
@@ -51,7 +51,7 @@ export const getDummybyId = async (options: DummyRequestOptions) => {
   log.debug('request ok');
   return {
     status: 200,
-    data: 'postDummy ok!'
+    data: 'postDummy ok!',
   };
 };
 
@@ -75,7 +75,7 @@ export const patchDummyById = async (options: DummyRequestOptions) => {
   log.debug('request ok');
   return {
     status: 200,
-    data: 'postDummy ok!'
+    data: 'postDummy ok!',
   };
 };
 
@@ -99,6 +99,6 @@ export const deleteDummyById = async (options: DummyRequestOptions) => {
   log.debug('request ok');
   return {
     status: 200,
-    data: 'postDummy ok!'
+    data: 'postDummy ok!',
   };
 };

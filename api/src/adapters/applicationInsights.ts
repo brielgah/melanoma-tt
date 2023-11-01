@@ -5,7 +5,8 @@ const connString = config.azure.applicationinsights.connectionString;
 if (connString == null) {
   throw new Error('config.azure.applicationinsights.connectionString is empty');
 }
-appInsights.setup(connString)
+appInsights
+  .setup(connString)
   .setAutoDependencyCorrelation(true)
   .setAutoCollectRequests(true)
   .setAutoCollectPerformance(true, true)

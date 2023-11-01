@@ -7,28 +7,26 @@ parserOptions:
   ecmaVersion: latest
   sourceType: module
 rules:
-    "@typescript-eslint/semi": [2, "always"]
-    '@typescript-eslint/member-delimiter-style': [
+  '@typescript-eslint/space-before-function-paren': off
+  '@typescript-eslint/comma-dangle': off
+  '@typescript-eslint/semi': [2, 'always']
+  '@typescript-eslint/member-delimiter-style':
+    [
       'error',
       {
-        multiline: {
-          delimiter: 'semi',
-          requireLast: true
-        },
-        singleline: {
-          delimiter: 'semi',
-          requireLast: true
-        }
-      }
+        multiline: { delimiter: 'semi', requireLast: true },
+        singleline: { delimiter: 'semi', requireLast: false },
+        multilineDetection: 'last-member',
+      },
     ]
-    "@typescript-eslint/explicit-function-return-type": off
-    "@typescript-eslint/strict-boolean-expressions":
-      - error
-      - allowNullableObject: true
-        allowNumber: true
-        allowString: true
+  '@typescript-eslint/explicit-function-return-type': off
+  '@typescript-eslint/strict-boolean-expressions':
+    - error
+    - allowNullableObject: true
+      allowNumber: true
+      allowString: true
 
 overrides:
-  - files: ["test/*"]
+  - files: ['test/*']
     env:
       jest: true

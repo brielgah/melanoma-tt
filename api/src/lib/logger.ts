@@ -29,7 +29,11 @@ const createLogger = (config: ILoggerConfig) => {
     bunyanConfig.push(logger);
   });
 
-  return bunyan.createLogger({ name: config.name ?? 'logger', level: config.level, streams: bunyanConfig });
+  return bunyan.createLogger({
+    name: config.name ?? 'logger',
+    level: config.level,
+    streams: bunyanConfig,
+  });
 };
 
 const log = createLogger(config.logger);

@@ -3,6 +3,7 @@ import app from './api';
 import http from 'http';
 import config from './lib/config';
 import log from './lib/logger';
+import getSequelize from './adapters/database';
 
 const port = normalizePort(config.api.port ?? '3000');
 app.set('port', port);
@@ -13,7 +14,7 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-function normalizePort (val: string) {
+function normalizePort(val: string) {
   const port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -29,7 +30,7 @@ function normalizePort (val: string) {
   return false;
 }
 
-function onError (error: NodeJS.ErrnoException) {
+function onError(error: NodeJS.ErrnoException) {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -54,8 +55,9 @@ function onError (error: NodeJS.ErrnoException) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-function onListening () {
+async function onListening() {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr?.port}`;
   log.debug(`Listening on ${bind}`);
+  await getSequelize();
 }
