@@ -10,9 +10,16 @@ app.set('port', port);
 
 const server = http.createServer(app);
 
-server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+getSequelize()
+  .then(() => {
+    server.listen(port);
+  })
+  .catch((error) => {
+    log.error(error, 'Cannot start server');
+  });
 
 function normalizePort(val: string) {
   const port = parseInt(val, 10);
@@ -55,9 +62,8 @@ function onError(error: NodeJS.ErrnoException) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-async function onListening() {
+function onListening() {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr?.port}`;
   log.debug(`Listening on ${bind}`);
-  await getSequelize();
 }

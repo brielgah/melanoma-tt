@@ -11,6 +11,8 @@ node_modules
 # Debug log from npm
 npm-debug.log
 
+./config/common.yml
+
 .DS_Store
 
 .env

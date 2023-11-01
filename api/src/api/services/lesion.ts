@@ -47,6 +47,9 @@ export const getLesionbyId = async (options: LesionGetRequestOptions) => {
       };
     }
     log.info('Lesion was returned');
+    for await (const photo of lesion.photos) {
+      await Photo.setImage(photo);
+    }
     return {
       status: 200,
       data: lesion,

@@ -1,19 +1,7 @@
 import log from '../../lib/logger';
 import { type RequestOptions } from '../../lib/types';
 import Photo from '../../models/photo.model';
-import { downloadImage, uploadImage } from '../../adapters/blobStorage';
-import type Image from '../../models/image';
-
-function photoFromRecord(record: any, image: Image): Photo {
-  return {
-    id: record.id_photo as number,
-    name: record.name as string,
-    dateOfCreation: record.creation_timestamp as number,
-    description: record.description as string,
-    blobName: record.blob_name as string,
-    image,
-  };
-}
+import { uploadImage } from '../../adapters/blobStorage';
 
 export const postPhoto = async (
   options: RequestOptions<Photo, { idLesion: number }>,
@@ -94,7 +82,6 @@ export const getPhotobyId = async (
       };
     }
     log.info('Photo was returned');
-    photo.image = await downloadImage(photo.blobName);
     return {
       status: 200,
       data: photo,
