@@ -63,7 +63,10 @@ export const getReminderById = async (
   }
 };
 
-type ReminderPatchRequestOptions = RequestOptions<Reminder, { idUser: number; idReminder: number }>;
+type ReminderPatchRequestOptions = RequestOptions<
+Reminder,
+{ idUser: number; idReminder: number }
+>;
 
 export const patchReminderById = async (
   options: ReminderPatchRequestOptions,
@@ -103,7 +106,10 @@ export const patchReminderById = async (
   }
 };
 
-type ReminderDeleteRequestOptions = RequestOptions<unknown, { idUser: number; idReminder: number }>;
+type ReminderDeleteRequestOptions = RequestOptions<
+unknown,
+{ idUser: number; idReminder: number }
+>;
 
 export const deleteReminderById = async (
   options: ReminderDeleteRequestOptions,
