@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7d2ac03 (Changing Image model)
 export default interface Image {
   name: string;
   ext: string;
   data: string;
+<<<<<<< HEAD
 }
 =======
 import { AutoIncrement, BelongsTo, Column, CreatedAt, DeletedAt, HasMany, Model, PrimaryKey, Table, UpdatedAt } from 'sequelize-typescript';
@@ -27,5 +31,7 @@ export class Image extends Model {
   @BelongsTo(() => User)
   user!:User;
 
+=======
+>>>>>>> 7d2ac03 (Changing Image model)
 }
 >>>>>>> ba1630f (Add ORM)

@@ -3,22 +3,20 @@ import { User } from './user';
 
 @Table
 export class Reminder extends Model {
-
   @AutoIncrement
   @PrimaryKey
   @Column
-  id!: number;
+    id!: number;
 
   @CreatedAt
-  creationDate?: Date;
+    creationDate?: Date;
 
   @UpdatedAt
-  updatedOn?: Date;
+    updatedOn?: Date;
 
   @DeletedAt
-  deletionDate?: Date;
+    deletionDate?: Date;
 
   @BelongsTo(() => User)
-  user!:User;
-
+    user!: User;
 }
