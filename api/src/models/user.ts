@@ -18,7 +18,10 @@ export class User extends Model {
     userName!: string;
 
   @Column
-    password!: string;
+    hash!: string;
+
+  @Column
+    salt!: string;
 
   @CreatedAt
     creationDate?: Date;
