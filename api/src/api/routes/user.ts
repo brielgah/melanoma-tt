@@ -1,18 +1,14 @@
 import User from '../../models/user.model';
-import { type RequestHandler, Router } from 'express';
-import Reminder from '../../models/reminder.model';
+import { Router } from 'express';
 import reminderRouter from './reminder';
-import '../../lib/passport';
-import Crypto from 'crypto';
-import passport from 'passport';
-import PatientRelationship from '../../models/patientRelationship.model';
-import log from '../../lib/logger';
+const Crypto = require('crypto');
 
 const userRouter = Router();
+const passport = require('passport');
 
 userRouter.use('/:idUser/reminder', reminderRouter);
 
-userRouter.post('/', (async (req, res, next) => {
+userRouter.post('/', async (req, res, next) => {
   const body = req.body;
   const password = body.password;
   delete body.password;
@@ -33,7 +29,7 @@ userRouter.post('/', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
-userRouter.get('/', (async (req, res, next) => {
+userRouter.get('/', async (req, res, next) => {
   try {
     res.json(await User.findAll());
   } catch (e) {
@@ -41,20 +37,10 @@ userRouter.get('/', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
-userRouter.get('/:idUser', (async (req, res, next) => {
+userRouter.get('/:id', async (req, res, next) => {
   const body = req.body;
-  const relations = await PatientRelationship.findAll();
-  log.info(JSON.stringify(relations));
-  User.findOne({
-    where: { id: req.params.idUser },
-    include: [Reminder, { model: User, as: 'patients',
-            through: {
-                attributes: [],
-            },
-            attributes: ['id', 'userName'],
-    }],
-  })
-    .then((user) => {
+  User.findOne({ where: { id: req.params.id } })
+    .then(user => {
       if (!user) {
         return res
           .status(401)
@@ -73,7 +59,7 @@ userRouter.get('/:idUser', (async (req, res, next) => {
     .catch(next);
 }) as RequestHandler);
 
-userRouter.patch('/:idUser', (async (req, res, next) => {
+userRouter.patch('/:id', async (req, res, next) => {
   const body = req.body;
   if ('password' in body) {
     const pass = createPassword(body.password);
@@ -81,30 +67,26 @@ userRouter.patch('/:idUser', (async (req, res, next) => {
     body.hash = pass.hash;
     body.salt = pass.salt;
   }
-  body.userName = body.userName.toLocaleLowerCase();
-  User.update(body, { where: { id: req.params.idUser } })
+  User.update(body, { where: { id: req.params.id } })
     .then(() => {
-      res
-        .status(201)
-        .send(`The user ${req.params.idUser} was updated successfully`);
-    })
-    .catch(next);
-}) as RequestHandler);
+      res.status(201).send(`Se modifico el usuario ${req.params.id}`);
+    }).catch(next);
+});
 
-userRouter.delete('/:idUser', (async (req, res, next) => {
-  await User.destroy({
+userRouter.delete('/:id', async (req, res, next) => {
+  const body = req.body;
+  User.destroy({
     where: {
-      id: req.params.idUser,
-    },
-  });
-  res
-    .status(201)
-    .send(`The user ${req.params.idUser} was deleted successfully`);
-}) as RequestHandler);
+      id: req.params.id
+    }
+  }).then(user =>
+    res.status(201).send(`Se elimino el usuario ${user}`));
+});
 
-userRouter.post('/login', (async (req, res, next) => {
-  if (req.body.userName == null) {
-    return res.status(422).json({ error: 'The user is required' });
+userRouter.post('/login', async (req, res, next) => {
+  const body = req.body;
+  if (!req.body.userName) {
+    return res.status(422).json({ error: 'El usuario es requerido' });
   }
 
   if (req.body.password == null) {

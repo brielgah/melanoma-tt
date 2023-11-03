@@ -1,19 +1,5 @@
-import {
-  Table,
-  Column,
-  Model,
-  HasMany,
-  AutoIncrement,
-  PrimaryKey,
-  CreatedAt,
-  UpdatedAt,
-  DeletedAt,
-  DataType,
-  BelongsToMany,
-} from 'sequelize-typescript';
-import Lesion from './lesion.model';
+import { Table, Column, Model, HasMany, AutoIncrement, Unique, PrimaryKey, CreatedAt, UpdatedAt, DeletedAt, DataType } from 'sequelize-typescript';
 import Reminder from './reminder.model';
-import PatientRelationship from './patientRelationship.model';
 
 @Table
 export default class User extends Model {
@@ -46,25 +32,9 @@ export default class User extends Model {
   @DeletedAt
     deletionDate?: Date;
 
-  @HasMany(() => Reminder, { foreignKey: 'idUser', sourceKey: 'id' })
+  @HasMany(() => Reminder)
     reminders?: Reminder[];
 
-  @HasMany(() => Lesion)
-    lesions?: Lesion[];
-
-  @BelongsToMany(() => User, {
-    through: { model: () => PatientRelationship },
-    foreignKey: 'doctorId',
-    as: 'patients',
-    sourceKey: 'id',
-  })
-    patients?: User[];
-
-  @BelongsToMany(() => User, {
-    through: { model: () => PatientRelationship },
-    foreignKey: 'patientId',
-    as: 'patientOf',
-    sourceKey: 'id',
-  })
-    patientOf?: User[];
+  // @HasMany(() => User)
+  //   patients?: User[];
 }
