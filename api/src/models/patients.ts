@@ -1,5 +1,5 @@
 import { Table, Column, Model, HasMany, AutoIncrement, Unique, PrimaryKey, CreatedAt, UpdatedAt, DeletedAt } from 'sequelize-typescript';
-import { User } from './user';
+import { User } from './user.model';
 @Table
 export class Patients extends Model {
   @AutoIncrement
@@ -8,7 +8,6 @@ export class Patients extends Model {
     id!: number;
 
   @Unique
-  @Column
     user!: User;
 
   @CreatedAt

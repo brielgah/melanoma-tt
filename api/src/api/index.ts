@@ -8,6 +8,7 @@ import dummyRouter from './routes/dummy';
 import type ServerError from '../lib/error';
 import bodyParser from 'body-parser';
 import lesionRouter from './routes/lesion';
+import userRouter from './routes/user';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Routes
 app.use('/dummy', dummyRouter);
 app.use('/lesion', lesionRouter);
+app.use('/user', userRouter);
 
 // catch 404
 app.use((req, res, next) => {

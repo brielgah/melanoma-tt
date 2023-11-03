@@ -1,10 +1,14 @@
-import { User } from '../../models/user';
+import User from '../../models/user.model';
 import { Router } from 'express';
+import reminderRouter from './reminder';
 const Crypto = require('crypto');
-export const users = Router();
+
+const userRouter = Router();
 const passport = require('passport');
 
-users.post('/', async (req, res, next) => {
+userRouter.use('/:idUser/reminder', reminderRouter);
+
+userRouter.post('/', async (req, res, next) => {
   const body = req.body;
   const password = body.password;
   delete body.password;
@@ -21,7 +25,7 @@ users.post('/', async (req, res, next) => {
   }
 });
 
-users.get('/', async (req, res, next) => {
+userRouter.get('/', async (req, res, next) => {
   try {
     res.json(await User.findAll());
   } catch (e) {
@@ -29,9 +33,9 @@ users.get('/', async (req, res, next) => {
   }
 });
 
-users.get('/:id', async (req, res, next) => {
+userRouter.get('/:id', async (req, res, next) => {
   const body = req.body;
-  User.findOne({ where: { username: req.params.id } })
+  User.findOne({ where: { id: req.params.id } })
     .then(user => {
       if (!user) {
         return res.status(401).send('No se encontró el usuario.');
@@ -49,7 +53,7 @@ users.get('/:id', async (req, res, next) => {
     }).catch(next);
 });
 
-users.put('/:id', async (req, res, next) => {
+userRouter.patch('/:id', async (req, res, next) => {
   const body = req.body;
   if ('password' in body) {
     const pass = createPassword(body.password);
@@ -58,25 +62,25 @@ users.put('/:id', async (req, res, next) => {
     body.salt = pass.salt;
   }
   User.update(body, { where: { id: req.params.id } })
-    .then(user => {
-      res.status(201).send(`Se modifico el usuario ${user}`);
+    .then(() => {
+      res.status(201).send(`Se modifico el usuario ${req.params.id}`);
     }).catch(next);
 });
 
-users.delete('/:id', async (req, res, next) => {
+userRouter.delete('/:id', async (req, res, next) => {
   const body = req.body;
   User.destroy({
     where: {
-      id: body.id
+      id: req.params.id
     }
   }).then(user =>
     res.status(201).send(`Se elimino el usuario ${user}`));
 });
 
-users.post('/login', async (req, res, next) => {
+userRouter.post('/login', async (req, res, next) => {
   const body = req.body;
-  if (!req.body.email) {
-    return res.status(422).json({ error: 'El email es requerido' });
+  if (!req.body.userName) {
+    return res.status(422).json({ error: 'El usuario es requerido' });
   }
 
   if (!req.body.password) {
@@ -117,3 +121,5 @@ export const toAuthJSON = function(user: User) {
     id: user.id,
   };
 };
+
+export default userRouter;

@@ -11,7 +11,7 @@ import {
   UpdatedAt,
   ForeignKey,
 } from 'sequelize-typescript';
-import { User } from './user.model';
+import User from './user.model';
 import Lesion from './lesion.model';
 
 @Table
@@ -20,6 +20,10 @@ export default class Reminder extends Model {
   @PrimaryKey
   @Column
     id!: number;
+
+  @ForeignKey(() => User)
+  @Column
+    idUser!: number;
 
   @ForeignKey(() => Lesion)
   @Column
@@ -37,6 +41,6 @@ export default class Reminder extends Model {
   @Column
     targetTimeStamp?: Date;
 
-  // @BelongsTo(() => User)
-  // user!:User;
+  @BelongsTo(() => User)
+    user!: User;
 }
