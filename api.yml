@@ -317,7 +317,13 @@ components:
       properties:
         id:
           type: number
-        username:
+        userName:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        lastName:
           type: string
         reminders:
           type: array

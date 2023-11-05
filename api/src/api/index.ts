@@ -9,12 +9,18 @@ import type ServerError from '../lib/error';
 import bodyParser from 'body-parser';
 import lesionRouter from './routes/lesion';
 import userRouter from './routes/user';
+import "../../config/passport";
+import passport from '../../config/passport';
+const session = require('express-session');
 
 const app = express();
 
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
-
+// Login components
+app.use(session({ secret: 'simpleExpressMVC', resave: true, saveUninitialized: true  }));
+app.use(passport.initialize());
+app.use(passport.session());
 // register routes for each endpoints here
 // Routes
 app.use('/dummy', dummyRouter);
