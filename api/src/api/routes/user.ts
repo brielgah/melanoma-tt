@@ -1,10 +1,12 @@
 import User from '../../models/user.model';
 import { Router } from 'express';
 import reminderRouter from './reminder';
+import "../../../config/passport"
 const Crypto = require('crypto');
 
 const userRouter = Router();
 const passport = require('passport');
+
 
 userRouter.use('/:idUser/reminder', reminderRouter);
 
@@ -18,12 +20,9 @@ userRouter.post('/', async (req, res, next) => {
     user.salt = pass.salt;
     user.hash = pass.hash;
     user.userName = user.userName.toLocaleLowerCase();
-    user
-      .save()
-      .then((user) => {
-        return res.status(201).json(toAuthJSON(user));
-      })
-      .catch(next);
+    user.save().then(user => {
+      return res.status(201).json(toAuthJSON(user));
+    }).catch(next);
   } catch (e) {
     next(e);
   }
@@ -37,14 +36,12 @@ userRouter.get('/', async (req, res, next) => {
   }
 }) as RequestHandler);
 
-userRouter.get('/:id', async (req, res, next) => {
+userRouter.get('/:idUser', async (req, res, next) => {
   const body = req.body;
-  User.findOne({ where: { id: req.params.id } })
+  User.findOne({ where: { id: req.params.idUser } })
     .then(user => {
       if (!user) {
-        return res
-          .status(401)
-          .send(`The user ${req.params.idUser} wasn't found `);
+        return res.status(401).send(`The user ${req.params.idUser} wasn't found `);
       }
       const response = {
         username: user.userName,
@@ -52,14 +49,13 @@ userRouter.get('/:id', async (req, res, next) => {
         lastname: user.lastName,
         id: user.id,
         reminders: user.reminders,
-        patients: user.patients,
       };
       return res.json(response);
     })
     .catch(next);
 }) as RequestHandler);
 
-userRouter.patch('/:id', async (req, res, next) => {
+userRouter.patch('/:idUser', async (req, res, next) => {
   const body = req.body;
   if ('password' in body) {
     const pass = createPassword(body.password);
@@ -67,40 +63,37 @@ userRouter.patch('/:id', async (req, res, next) => {
     body.hash = pass.hash;
     body.salt = pass.salt;
   }
-  User.update(body, { where: { id: req.params.id } })
+  body.userName = body.userName.toLocaleLowerCase();
+  User.update(body, { where: { id: req.params.idUser } })
     .then(() => {
-      res.status(201).send(`Se modifico el usuario ${req.params.id}`);
+      res.status(201).send(`The user ${req.params.idUser} was updated successfully`);
     }).catch(next);
 });
 
-userRouter.delete('/:id', async (req, res, next) => {
+userRouter.delete('/:idUser', async (req, res, next) => {
   const body = req.body;
   User.destroy({
     where: {
-      id: req.params.id
+      id: req.params.idUser
     }
   }).then(user =>
-    res.status(201).send(`Se elimino el usuario ${user}`));
+    res.status(201).send(`The user ${req.params.idUser} was deleted successfully`));
 });
 
 userRouter.post('/login', async (req, res, next) => {
   const body = req.body;
   if (!req.body.userName) {
-    return res.status(422).json({ error: 'El usuario es requerido' });
+    return res.status(422).json({ error: 'The user is required' });
   }
 
-  if (req.body.password == null) {
+  if (!req.body.password) {
     return res.status(422).json({ error: 'The password is required' });
   }
 
-  passport.authenticate(
-    'local',
-    { session: false },
-    function (err: Error, user: User, info: any) {
-      if (err != null) {
-        next(err);
-        return;
-      }
+  passport.authenticate("local", { session: false }, function (err:Error, user:User, info) {
+    if (err) {
+      next(err); return;
+    }
 
       if (user != null) {
         return res.json({ user: toAuthJSON(user) });
