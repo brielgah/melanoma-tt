@@ -7,12 +7,11 @@ export const postReminder = async (
 ) => {
   try {
     const reminder = new Reminder({
-      lesionId: options.params.idLesion,
+      idLesion: options.params.idLesion,
+      idUser: options.params.idUser,
       targetTimeStamp: options.body.targetTimeStamp,
     });
     await reminder.save();
-    log.info('Reminder was inserted');
-    // TODO: Add the reminder to the User once it's created
     return {
       status: 200,
       data: {
@@ -83,7 +82,7 @@ export const patchReminderById = async (
       };
     }
     const update = {
-      targetTimeStamp: reminder.targetTimeStamp,
+      targetTimeStamp: options.body.targetTimeStamp,
     };
     await reminder.update(update);
     log.info('Reminder was updated');

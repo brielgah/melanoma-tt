@@ -10,6 +10,7 @@ export const postLesion = async (options: LesionPostRequestOptions) => {
     log.info('Inserting new lesion');
     const lesion = new Lesion({
       name: options.body.name,
+      idUser: options.body.idUser,
     });
     await lesion.save();
     log.info('Lesion was inserted');

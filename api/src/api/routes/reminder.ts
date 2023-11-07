@@ -9,13 +9,13 @@ import {
 
 const reminderRouter = Router({ mergeParams: true });
 
-reminderRouter.post('/', (async (req, res, next) => {
+reminderRouter.post('/:idLesion', (async (req, res, next) => {
   const reminder = req.body;
-  reminder.dateOfCreation = Date.now();
+
   const idLesion = req.params.idLesion;
   const idUser = req.params.idUser;
-  const targetTimeStamp = req.params.targetTimeStamp;
-  if (idLesion == null) {
+
+  if (idUser == null) {
     return res.status(400).send({
       result: false,
       message: 'missing user id',
@@ -27,13 +27,12 @@ reminderRouter.post('/', (async (req, res, next) => {
       message: 'missing lesion id',
     });
   }
-  if (targetTimeStamp == null) {
+  if (reminder.targetTimeStamp == null) {
     return res.status(400).send({
       result: false,
-      message: 'missing lesion id',
+      message: 'missing target date',
     });
   }
-  reminder.targetTimeStamp = targetTimeStamp;
   const options = {
     body: reminder as Reminder,
     params: {

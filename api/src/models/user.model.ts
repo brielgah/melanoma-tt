@@ -4,13 +4,15 @@ import {
   Model,
   HasMany,
   AutoIncrement,
-  Unique,
   PrimaryKey,
   CreatedAt,
   UpdatedAt,
   DeletedAt,
+  DataType,
 } from 'sequelize-typescript';
-import { Reminder } from './reminder.model';
+import Lesion from './lesion.model';
+import Reminder from './reminder.model';
+
 @Table
 export default class User extends Model {
   @AutoIncrement
@@ -27,8 +29,11 @@ export default class User extends Model {
   @Column
     userName!: string;
 
-  @Column
-    password!: string;
+  @Column(DataType.TEXT)
+    hash!: string;
+
+  @Column(DataType.TEXT)
+    salt!: string;
 
   @CreatedAt
     creationDate?: Date;
@@ -39,9 +44,12 @@ export default class User extends Model {
   @DeletedAt
     deletionDate?: Date;
 
-  // @HasMany(() => Reminder)
-  // reminders?: Reminder[];
+  @HasMany(() => Reminder)
+    reminders?: Reminder[];
+
+  @HasMany(() => Lesion)
+    lesions?: Lesion[];
 
   // @HasMany(() => User)
-  // patients?: User[];
+  //   patients?: User[];
 }

@@ -207,6 +207,18 @@ paths:
     parameters:
       - $ref: '#/components/parameters/idUser'
       - $ref: '#/components/parameters/idReminder'
+    get:
+      responses:
+        '200':
+          description: The reminder is returnd successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reminder'
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
     patch:
       requestBody:
         required: true
@@ -317,7 +329,13 @@ components:
       properties:
         id:
           type: number
-        username:
+        userName:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        lastName:
           type: string
         reminders:
           type: array
@@ -339,7 +357,7 @@ components:
           type: number
         name:
           type: string
-        dateOfCreation:
+        createdAt:
           type: number
         description:
           type: string

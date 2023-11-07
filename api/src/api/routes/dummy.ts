@@ -6,6 +6,7 @@ import {
   postDummy,
 } from '../services/dummy';
 import getSequelize from '../../adapters/database';
+import type Dummy from '../../models/dummy';
 
 // add http routes for an endpoint in src/routes,
 // example:
@@ -18,7 +19,8 @@ const dummyRouter = Router();
 
 dummyRouter.post('/', (async (req, res, next) => {
   const options = {
-    body: req.body,
+    body: req.body as Dummy,
+    params: { id: 1 },
   };
 
   try {
@@ -31,16 +33,16 @@ dummyRouter.post('/', (async (req, res, next) => {
 
 dummyRouter.get('/:id', (async (req, res, next) => {
   const options = {
-    id: req.params.id,
-    body: req.body,
+    params: { id: Number(req.params.id) },
+    body: req.body as Dummy,
   };
 
   await getSequelize();
 
-  const file = 'asdasdasdadasdads';
-  await uploadImage({ name: 'test', data: file, ext: 'jpg' });
-  const download = await downloadImage('test.jpg');
-  console.log(download);
+  // const file = 'asdasdasdadasdads';
+  // await uploadImage({ name: 'test', data: file, ext: 'jpg' });
+  // const download = await downloadImage('test.jpg');
+  // console.log(download);
 
   try {
     const result = await getDummybyId(options);
@@ -52,8 +54,8 @@ dummyRouter.get('/:id', (async (req, res, next) => {
 
 dummyRouter.patch('/:id', (async (req, res, next) => {
   const options = {
-    id: req.params.id,
-    body: req.body,
+    params: { id: Number(req.params.id) },
+    body: req.body as Dummy,
   };
 
   try {
@@ -66,8 +68,8 @@ dummyRouter.patch('/:id', (async (req, res, next) => {
 
 dummyRouter.delete('/:id', (async (req, res, next) => {
   const options = {
-    id: req.params.id,
-    body: req.body,
+    params: { id: Number(req.params.id) },
+    body: req.body as Dummy,
   };
 
   try {

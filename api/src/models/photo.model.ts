@@ -41,7 +41,7 @@ export default class Photo extends Model {
     lesion!: Lesion;
 
   @Column(DataType.VIRTUAL)
-    image: Image;
+    image!: Image;
 
   @AfterFind
   static async setImage(instance: Photo) {

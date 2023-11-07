@@ -18,6 +18,14 @@ lesionRouter.post('/', (async (req, res, next) => {
       message: 'missing lesion name',
     });
   }
+
+  if (lesion.owner?.id == null) {
+    return res.status(400).send({
+      result: false,
+      message: 'missing owner',
+    });
+  }
+  lesion.idUser = lesion.owner.id;
   const options = {
     body: lesion as Lesion,
     params: {},

@@ -8,7 +8,6 @@ import {
   UpdatedAt,
   DeletedAt,
 } from 'sequelize-typescript';
-import { User } from './user.model';
 
 @Table
 export default class Patients extends Model {
@@ -18,7 +17,7 @@ export default class Patients extends Model {
     id!: number;
 
   // @Unique
-  // @Column
+  // @Column(DataType.VIRTUAL)
   // user!: User;
 
   @CreatedAt

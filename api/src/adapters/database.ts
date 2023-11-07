@@ -46,6 +46,7 @@ const getSequelize = async () => {
     await sequelize.sync();
   } catch (error) {
     log.error(error, 'Unable to connect to database');
+    throw error;
   }
   return sequelize;
 };
