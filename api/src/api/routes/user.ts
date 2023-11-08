@@ -1,5 +1,6 @@
 import User from '../../models/user.model';
 import { type RequestHandler, Router } from 'express';
+import Reminder from '../../models/reminder.model';
 import reminderRouter from './reminder';
 import '../../lib/passport';
 import Crypto from 'crypto';
@@ -39,8 +40,9 @@ userRouter.get('/', (async (req, res, next) => {
 }) as RequestHandler);
 
 userRouter.get('/:idUser', (async (req, res, next) => {
-  User.findOne({ where: { id: req.params.idUser } })
-    .then((user) => {
+  const body = req.body;
+  User.findOne({ where: { id: req.params.idUser }, include: [Reminder] })
+    .then(user => {
       if (!user) {
         return res
           .status(401)

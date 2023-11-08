@@ -44,7 +44,7 @@ export default class User extends Model {
   @DeletedAt
     deletionDate?: Date;
 
-  @HasMany(() => Reminder)
+  @HasMany(() => Reminder, { foreignKey: 'idUser', sourceKey: 'id'})
     reminders?: Reminder[];
 
   @HasMany(() => Lesion)
