@@ -11,6 +11,7 @@ import lesionRouter from './routes/lesion';
 import userRouter from './routes/user';
 import passport from '../lib/passport';
 import session from 'express-session';
+import operationRouter from './routes/operation';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(passport.session());
 app.use('/dummy', dummyRouter);
 app.use('/lesion', lesionRouter);
 app.use('/user', userRouter);
+app.use('/operation', operationRouter);
 
 // catch 404
 app.use((req, res, next) => {

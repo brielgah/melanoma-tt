@@ -1,5 +1,6 @@
 from azure.storage.blob import BlobServiceClient
 from . import keyvault
+import sys
 
 blob_service_client = None
 def create_blob_service_client():
@@ -23,15 +24,16 @@ def create_image_container_client():
     return blob_service_client.get_container_client(container_name)
 
 def download_image(blob_name : str):
-    image_container_client = create_image_container_client()
-    block_blob_client = image_container_client.get_blob_client(blob_name)
-
     try:
+        image_container_client = create_image_container_client()
+        block_blob_client = image_container_client.get_blob_client(blob_name)
+
         download_block_blob_response = block_blob_client.download_blob()
         blob_content = download_block_blob_response.readall()
     except Exception as e:
-        print(f'Error downloading blob: {str(e)}')
-        return {}
+        return {
+                'error': f'Error downloading blob: {str(e)}',
+        }
     splited_blob_name = blob_name.split('.')
     return {
             'name': splited_blob_name[0],
