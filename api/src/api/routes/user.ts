@@ -5,6 +5,8 @@ import reminderRouter from './reminder';
 import '../../lib/passport';
 import Crypto from 'crypto';
 import passport from 'passport';
+import PatientRelationship from '../../models/patientRelationship.model';
+import log from '../../lib/logger';
 
 const userRouter = Router();
 
@@ -41,8 +43,18 @@ userRouter.get('/', (async (req, res, next) => {
 
 userRouter.get('/:idUser', (async (req, res, next) => {
   const body = req.body;
-  User.findOne({ where: { id: req.params.idUser }, include: [Reminder] })
-    .then(user => {
+  const relations = await PatientRelationship.findAll();
+  log.info(JSON.stringify(relations));
+  User.findOne({
+    where: { id: req.params.idUser },
+    include: [Reminder, { model: User, as: 'patients',
+            through: {
+                attributes: [],
+            },
+            attributes: ['id', 'userName'],
+    }],
+  })
+    .then((user) => {
       if (!user) {
         return res
           .status(401)
@@ -54,6 +66,7 @@ userRouter.get('/:idUser', (async (req, res, next) => {
         lastname: user.lastName,
         id: user.id,
         reminders: user.reminders,
+        patients: user.patients,
       };
       return res.json(response);
     })
@@ -114,6 +127,61 @@ userRouter.post('/login', (async (req, res, next) => {
       }
     },
   )(req, res, next);
+}) as RequestHandler);
+
+userRouter.post('/:idUser/associate/:idPatient', (async (req, res, next) => {
+  if (req.params.idUser == null) {
+    return res.status(400).send({
+      result: false,
+      message: 'missing user id',
+    });
+  }
+  if (req.params.idPatient == null) {
+    return res.status(400).send({
+      result: false,
+      message: 'missing associate id',
+    });
+  }
+  const user1 = await User.findByPk(Number(req.params.idUser));
+  const user2 = await User.findByPk(Number(req.params.idPatient));
+  if (user1 == null) {
+    return res.status(404).send({
+      result: false,
+      message: 'Doctor does not exist',
+    });
+  }
+  if (user2 == null) {
+    return res.status(404).send({
+      result: false,
+      message: 'Patient does not exist',
+    });
+  }
+  const existingrelationship = await PatientRelationship.findOne({
+          where : {doctorId : user1.id, patientId : user2.id},
+  });
+  if(existingrelationship) {
+          return res.status(409).send({
+                  result: false,
+                  message: 'The association already exists',
+          });
+  }
+  const patientRelationship = new PatientRelationship({
+    doctorId: user1.id,
+    patientId: user2.id,
+  });
+  try {
+    await patientRelationship.save();
+  } catch (error) {
+    log.error(error);
+    return res.status(500).send({
+      result: false,
+      message: 'Internal Error',
+    });
+  }
+  return res.status(200).send({
+    result: true,
+    message: 'Relationship created correctly',
+  });
 }) as RequestHandler);
 
 const createPassword = function (password: string) {

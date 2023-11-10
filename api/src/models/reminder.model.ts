@@ -22,13 +22,13 @@ export default class Reminder extends Model {
   @Column
     idUser!: number;
 
-  @BelongsTo(() => User, {foreignKey: 'idUser', targetKey: 'id'})
+  @BelongsTo(() => User, { foreignKey: 'idUser', targetKey: 'id' })
     user!: User;
 
   @Column
     idLesion!: number;
 
-  @BelongsTo(() => Lesion, {foreignKey: 'idLesion', targetKey: 'id'})
+  @BelongsTo(() => Lesion, { foreignKey: 'idLesion', targetKey: 'id' })
     lesion!: Lesion;
 
   @CreatedAt
@@ -42,5 +42,4 @@ export default class Reminder extends Model {
 
   @Column
     targetTimeStamp?: Date;
-
 }

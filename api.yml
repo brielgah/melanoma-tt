@@ -10,7 +10,7 @@ paths:
   # /user/{idUser}: # update, delete and get user
   # /user/{idUser}/login: # log user
   # /user/{idUser}/reminder/{lesionId}: # add reminder to user
-  # /user/{idUser}/associate/{idUserToAssociate}: # associate two users
+  # /user/{idUser}/associate/{idPatient}: # associate two users
   # /user/{idUser}/share/{idUserToAssociate}/{lesionId}: # share user's lesion to another user
   # /compare/{prevPhotoId}/{afterPhotoId}: # compare two photos
   # /prediagnose: # prediagnose a photo
@@ -242,12 +242,12 @@ paths:
         '401':
           $ref: "#/components/responses/Unauthorized"
 
-  /user/{idUser}/associate/{idUserToAssociate}:
+  /user/{idUser}/associate/{idPatient}:
     parameters:
       - $ref: '#/components/parameters/idUser'
-      - $ref: '#/components/parameters/idUserToAssociate'
-    patch:
-      description: Associates two users
+      - $ref: '#/components/parameters/idPatient'
+    post:
+      description: Creates an asociation between two users
       responses:
         '200':
           $ref: "#/components/responses/OK"
