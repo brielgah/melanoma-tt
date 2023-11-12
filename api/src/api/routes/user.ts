@@ -172,7 +172,7 @@ userRouter.post('/:idUser/associate/:idPatient', (async (req, res, next) => {
   try {
     await patientRelationship.save();
   } catch (error) {
-    log.error(error);
+    log.error('Error while saving the relationship: ', error);
     return res.status(500).send({
       result: false,
       message: 'Internal Error',
