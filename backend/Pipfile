@@ -15,6 +15,7 @@ pandas = "*"
 seaborn = "*"
 tk = "*"
 tkintertable = "*"
+opencv-contrib-python = "*"
 
 [dev-packages]
 pylint = "*"
