@@ -10,6 +10,7 @@ import {
   DeletedAt,
   DataType,
   BelongsToMany,
+  Unique,
 } from 'sequelize-typescript';
 import Lesion from './lesion.model';
 import Reminder from './reminder.model';
@@ -28,6 +29,7 @@ export default class User extends Model {
   @Column
     lastName!: string;
 
+  @Unique
   @Column
     userName!: string;
 

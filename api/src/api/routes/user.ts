@@ -1,6 +1,7 @@
 import User from '../../models/user.model';
 import { type RequestHandler, Router } from 'express';
 import Reminder from '../../models/reminder.model';
+import Lesion from '../../models/lesion.model';
 import reminderRouter from './reminder';
 import '../../lib/passport';
 import Crypto from 'crypto';
@@ -35,7 +36,27 @@ userRouter.post('/', (async (req, res, next) => {
 
 userRouter.get('/', (async (req, res, next) => {
   try {
-    res.json(await User.findAll());
+    res.json(
+      await User.findAll({
+        include: [
+          Reminder,
+          {
+            model: User,
+            as: 'patients',
+            through: {
+              attributes: [],
+            },
+            attributes: ['id', 'userName'],
+          },
+          Lesion,
+          {
+            model: Lesion,
+            as: 'lesions',
+            attributes: ['id', 'name'],
+          },
+        ],
+      }),
+    );
   } catch (e) {
     next(e);
   }
@@ -56,6 +77,12 @@ userRouter.get('/:idUser', (async (req, res, next) => {
         },
         attributes: ['id', 'userName'],
       },
+      Lesion,
+      {
+        model: Lesion,
+        as: 'lesions',
+        attributes: ['id', 'name'],
+      },
     ],
   })
     .then((user) => {
@@ -71,6 +98,7 @@ userRouter.get('/:idUser', (async (req, res, next) => {
         id: user.id,
         reminders: user.reminders,
         patients: user.patients,
+        lesions: user.lesions,
       };
       return res.json(response);
     })
