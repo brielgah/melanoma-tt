@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && npx tsc && cp -r ./config ./dist/config",
+    "build": "rm -rf dist && (tsc || ./node_modules/typescript/bin/tsc) && mkdir -p config && touch config/common.yml && cp -r ./config ./dist/config",
     "start": "node ./dist/src/index.js",
     "start:dev": "ts-node-dev --respawn --transpile-only ./src/index.ts | bunyan",
     "lint": "prettier . --write && eslint --ext .ts ./src ./tests --fix",

@@ -18,10 +18,11 @@ const secrets = new Map<SecretsKeys, string | undefined>();
 const getSecrets = async () => {
   if (secrets.size !== 0) return secrets;
 
-  const keyVaultName = config.azure.keyvault.name;
-  const clientSecret = config.azure.keyvault.clientSecret;
-  const clientId = config.azure.keyvault.clientId;
-  const tenantId = config.azure.keyvault.tenantId;
+  const keyVaultName = config.azure.keyvault.name ?? process.env.KEY_VAULT_NAME;
+  const clientSecret =
+    config.azure.keyvault.clientSecret ?? process.env.CLIENT_SECRET;
+  const clientId = config.azure.keyvault.clientId ?? process.env.CLIENT_ID;
+  const tenantId = config.azure.keyvault.tenantId ?? process.env.TENANT_ID;
 
   if (keyVaultName == null) {
     throw new Error('config.azure.keyvault.name is empty');

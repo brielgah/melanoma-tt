@@ -39,7 +39,7 @@ const getSequelize = async () => {
         requestTimeout: 30000,
       },
     },
-    models: [__dirname + './../models/*.model.ts'],
+    models: [__dirname + './../models/*.model.{ts,js}'],
   });
   try {
     await sequelize.authenticate();

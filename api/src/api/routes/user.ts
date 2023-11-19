@@ -42,17 +42,21 @@ userRouter.get('/', (async (req, res, next) => {
 }) as RequestHandler);
 
 userRouter.get('/:idUser', (async (req, res, next) => {
-  const body = req.body;
   const relations = await PatientRelationship.findAll();
   log.info(JSON.stringify(relations));
   User.findOne({
     where: { id: req.params.idUser },
-    include: [Reminder, { model: User, as: 'patients',
-            through: {
-                attributes: [],
-            },
-            attributes: ['id', 'userName'],
-    }],
+    include: [
+      Reminder,
+      {
+        model: User,
+        as: 'patients',
+        through: {
+          attributes: [],
+        },
+        attributes: ['id', 'userName'],
+      },
+    ],
   })
     .then((user) => {
       if (!user) {
@@ -157,13 +161,13 @@ userRouter.post('/:idUser/associate/:idPatient', (async (req, res, next) => {
     });
   }
   const existingrelationship = await PatientRelationship.findOne({
-          where : {doctorId : user1.id, patientId : user2.id},
+    where: { doctorId: user1.id, patientId: user2.id },
   });
-  if(existingrelationship) {
-          return res.status(409).send({
-                  result: false,
-                  message: 'The association already exists',
-          });
+  if (existingrelationship) {
+    return res.status(409).send({
+      result: false,
+      message: 'The association already exists',
+    });
   }
   const patientRelationship = new PatientRelationship({
     doctorId: user1.id,

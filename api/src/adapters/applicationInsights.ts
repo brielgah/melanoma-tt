@@ -1,7 +1,9 @@
 import * as appInsights from 'applicationinsights';
 import config from '../lib/config';
 
-const connString = config.azure.applicationinsights.connectionString;
+const connString =
+  config.azure.applicationinsights.connectionString ??
+  process.env.APPLICATIONINSIGHTS_CONNECTION_STRING;
 if (connString == null) {
   throw new Error('config.azure.applicationinsights.connectionString is empty');
 }
