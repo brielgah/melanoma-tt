@@ -16,15 +16,15 @@ interface IProcessResult {
 export const spawnProcess = async (
   options: RequestOptions<
   unknown,
-  { cmd: { cmd: string; id1: string; id2: string } }
+  { cmd: { cmd: string; blobNameBefore: string; blobNameAfter: string } }
   >,
 ) => {
   const cmd = options.params.cmd;
   const pythonProcess = spawn('python3', [
     path.join(__dirname, '../../../../backend/dispatcher.py'),
     cmd.cmd,
-    cmd.id1,
-    cmd.id2,
+    cmd.blobNameBefore,
+    cmd.blobNameAfter,
   ]);
 
   let dataRes = '';
@@ -73,7 +73,6 @@ export const spawnProcess = async (
       });
     },
   );
-
   // Wait for the process to complete and return the result
   return await processCompletionPromise;
 };

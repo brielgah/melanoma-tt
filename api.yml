@@ -8,7 +8,7 @@ paths:
 
   # /user: # create user
   # /user/{idUser}: # update, delete and get user
-  # /user/{idUser}/login: # log user
+  # /user/login: # log user
   # /user/{idUser}/reminder/{lesionId}: # add reminder to user
   # /user/{idUser}/associate/{idPatient}: # associate two users
   # /user/{idUser}/share/{idUserToAssociate}/{lesionId}: # share user's lesion to another user
@@ -144,6 +144,15 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         '400':
           $ref: "#/components/responses/BadRequest"
+    get:
+      description: Gets all users in the system
+      responses:
+        '200':
+            $ref: "#/components/responses/OK"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
 
   /user/{idUser}:
     parameters:
@@ -182,6 +191,19 @@ paths:
           $ref: "#/components/responses/OK"
         '401':
           $ref: "#/components/responses/Unauthorized"
+
+  /user/login:
+    post:
+      description: Logs a user into the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
 
   /user/{idUser}/reminder/{idLesion}:
     parameters:
@@ -259,7 +281,7 @@ paths:
   /operation/analyze/{operation}:
     parameters:
       - $ref: '#/components/parameters/operation'
-    get:
+    post:
       description: Gets the result of an operation under images
       requestBody:
         required: true
@@ -309,6 +331,18 @@ components:
       required: true
       schema:
         type: integer
+    idPatient:
+      name: idPatient
+      in: path
+      required: true
+      schema:
+        type: integer
+    operation:
+      name: operation
+      in: path
+      required: true
+      schema:
+        type: string
 
   responses:
     'OK':
@@ -414,5 +448,15 @@ components:
     analyze:
       type: object
       properties:
-        ids:
+        blobNames:
           type: array
+          items:
+            type: string
+    login:
+      type: object
+      properties:
+        userName:
+          type: string
+        password:
+          type: string
+
