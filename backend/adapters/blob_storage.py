@@ -1,6 +1,5 @@
 from azure.storage.blob import BlobServiceClient
 from . import keyvault
-import sys
 
 blob_service_client = None
 def create_blob_service_client():
