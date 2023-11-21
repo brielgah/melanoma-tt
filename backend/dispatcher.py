@@ -2,6 +2,7 @@ from adapters.blob_storage import download_image
 import sys
 import image_processing.processor as img_proc
 import json
+from cnn.ResNet.ResNet import predict
 
 
 def verify_image_content(img, blobName):
@@ -27,11 +28,8 @@ def compare(blobNameBefore, blobNameAfter):
 def classify(blobName):
     img = download_image(blobName)
     verify_image_content(img, blobName)
-
-    result = {
-        'percentage' : 85.3,
-    };
-
+    predict(img)
+    result = predict(img)
     return json.dumps(result)
 
 def extract(blobName):
