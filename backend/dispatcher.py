@@ -38,7 +38,7 @@ def extract(blobName):
     img = download_image(blobName)
     verify_image_content(img, blobName)
 
-    result = img_proc.extract(img['data'])
+    result = img_proc.extract(img)
 
     return json.dumps(result)
 

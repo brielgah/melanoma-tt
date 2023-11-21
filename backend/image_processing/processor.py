@@ -13,7 +13,7 @@ def process_image(img):
 
 
 def extract(img):
-    img_cv2 = converter.tocv2Img(img)
+    img_cv2 = converter.convertToOpenCVFormat(img)
     [processed_img, msk] = process_image(img_cv2)
 
     return {
