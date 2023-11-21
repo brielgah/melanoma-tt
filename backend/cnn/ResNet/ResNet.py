@@ -7,6 +7,8 @@ from torchvision import transforms, datasets
 from torchsummary import summary
 from torch.utils.data import Dataset, DataLoader, random_split
 from MelanomaDataset import MelanomaDataset
+from image_processing.util.converter import convertToOpenCVFormat
+import sys
 
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import seaborn as sn
@@ -15,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 MODEL = "model_weights"
+MODEL_DIR = ""
 
 class block(nn.Module):
     def __init__(
@@ -274,7 +277,7 @@ def test_model(model,test_loader,device):
     model.eval()
     y_pred = []
     y_true = []
-    with  torch.no_grad():
+    with torch.no_grad():
         batch = 0
         for inputs, labels in test_loader:
             print(f"Batch {batch}")
@@ -314,6 +317,33 @@ def test():
     train_loader, val_loader, test_loader = dataloader_melanoma()
     train_costs, val_costs = train_model(train_loader,val_loader,test_loader,model,device)
     test_model(model, test_loader,device)
+
+def convert_image(img):
+    img = convertToOpenCVFormat(img)
+    proccessed_image = main.process_image(img)
+    transform = transforms.ToTensor()
+    input = transform(proccessed_image)
+    return input
+
+
+def predict(img):
+    if os.path.exists(os.path.join(MODEL_DIR), MODEL)):
+      device = "cuda" if torch.cuda.is_available() else "cpu"
+      print("Loading model")
+      model = ResNet101(img_channel=3, num_classes=2)
+      model.load_state_dict(torch.load(os.path.join(MODEL_DIR,MODEL),map_location=torch.device('cpu')))
+      input = convert_image(img)
+      model.eval()
+      output = model(input)
+      result = {
+          "result": output
+      }
+      return result
+    else:
+        result = {
+            "error": "Can't found the trained model"
+        }
+        return result
 
 def main():
     if os.path.exists(os.path.join(os.getenv('DATASET_PATH'),MODEL)):
