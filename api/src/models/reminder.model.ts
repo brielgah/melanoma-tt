@@ -22,6 +22,10 @@ export default class Reminder extends Model {
   @Column
     idUser!: number;
 
+  // In hours
+  @Column
+    cycleLength!: number;
+
   @BelongsTo(() => User, { foreignKey: 'idUser', targetKey: 'id' })
     user!: User;
 

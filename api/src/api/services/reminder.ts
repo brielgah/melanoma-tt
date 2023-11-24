@@ -10,6 +10,7 @@ export const postReminder = async (
       idLesion: options.params.idLesion,
       idUser: options.params.idUser,
       targetTimeStamp: options.body.targetTimeStamp,
+      cycleLength: options.body.cycleLength,
     });
     await reminder.save();
     return {
@@ -51,12 +52,12 @@ export const getReminderById = async (
       data: reminder,
     };
   } catch (error) {
-    log.error(error, 'Error getting photo');
+    log.error(error, 'Error getting reminder');
     return {
       status: 400,
       data: {
         result: false,
-        message: 'Error getting photo',
+        message: 'Error getting reminder',
       },
     };
   }
@@ -132,6 +133,56 @@ export const deleteReminderById = async (
       data: {
         result: false,
         message: 'Error deleting reminder',
+      },
+    };
+  }
+};
+
+export const discardReminder = async (
+  options: RequestOptions<
+  unknown,
+  { idUser: number; idReminder: number; erase: boolean }
+  >,
+) => {
+  try {
+    const reminder = await Reminder.findByPk(options.params.idReminder);
+    if (reminder === null) {
+      return {
+        status: 404,
+        data: {
+          result: false,
+          message: 'Reminder does not exists',
+        },
+      };
+    }
+    options.params.erase =
+      reminder.cycleLength === 0 ||
+      reminder.targetTimeStamp === undefined ||
+      options.params.erase;
+    log.info('Reminder was returned');
+    if (options.params.erase) {
+      return await deleteReminderById(options);
+    }
+    const current = reminder.targetTimeStamp ?? new Date();
+    const future = new Date(
+      current.getTime() + reminder.cycleLength * 60 * 60 * 1000,
+    );
+    reminder.targetTimeStamp = future;
+    const patchOptions = {
+      params: {
+        idUser: options.params.idUser,
+        idReminder: options.params.idReminder,
+      },
+      body: reminder,
+    };
+    return await patchReminderById(patchOptions);
+  } catch (error) {
+    log.error(error, 'Error discarding reminder');
+    return {
+      status: 400,
+      data: {
+        result: false,
+        message: 'Error getting reminder',
       },
     };
   }
