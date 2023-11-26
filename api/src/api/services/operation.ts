@@ -1,79 +1,55 @@
 import { type RequestOptions } from '../../lib/types';
-import * as path from 'path';
-import { spawn } from 'child_process';
 import log from '../../lib/logger';
+import axios, { type AxiosResponse } from 'axios';
 
-interface ProcessData {
-  result: boolean;
-  message: string;
+interface Operation {
+  op: string;
+  blobNames: string[];
 }
 
-interface IProcessResult {
-  status: number;
-  data: ProcessData | string;
-}
-
-export const spawnProcess = async (
+export const makeHttpRequest = async (
   options: RequestOptions<
   unknown,
   { cmd: { cmd: string; blobNameBefore: string; blobNameAfter: string } }
   >,
 ) => {
-  const cmd = options.params.cmd;
-  const pythonProcess = spawn('python3', [
-    path.join(__dirname, '../../../../backend/dispatcher.py'),
-    cmd.cmd,
-    cmd.blobNameBefore,
-    cmd.blobNameAfter,
-  ]);
-
-  let dataRes = '';
-  let errorRes = '';
-
-  const handleProcessCompletion = async () => {
-    if (errorRes.length) {
-      log.info(`stderr data: ${errorRes}`);
-      return await Promise.resolve({
+  try {
+    const azFunc = process.env.AZURE_FUNCTION_URL ?? '';
+    if (azFunc === '') {
+      return {
         status: 500,
         data: {
           result: false,
-          message: errorRes,
+          message: "Azure function URL isn't defined",
         },
-      });
+      };
     }
-
-    log.info(`stdout data: ${dataRes}`);
-    return await Promise.resolve({
-      status: 200,
-      data: dataRes,
-    });
-  };
-
-  // Attach event handlers
-  pythonProcess.stdout.on('data', (data) => {
-    const parsedData = JSON.parse(data);
-    dataRes += JSON.stringify(parsedData);
-  });
-  pythonProcess.stderr.on('data', (data) => {
-    const parsedData = JSON.parse(data);
-    errorRes += JSON.stringify(parsedData);
-  });
-
-  // Wrap the process completion logic in a promise
-  const processCompletionPromise = new Promise<PromiseLike<IProcessResult>>(
-    (resolve, reject) => {
-      pythonProcess.on('close', () => {
-        const result = handleProcessCompletion();
-        resolve(result);
-      });
-
-      // Handle process errors
-      pythonProcess.on('error', (err) => {
-        reject(err);
-      });
-    },
-  );
-
-  // Wait for the process to complete and return the result
-  return await processCompletionPromise;
+    const cmd = options.params.cmd;
+    const { data, status }: AxiosResponse<Operation> = await axios.post(
+      azFunc,
+      {
+        op: cmd.cmd,
+        blobNames: [cmd.blobNameBefore, cmd.blobNameAfter],
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      },
+    );
+    return {
+      status,
+      data,
+    };
+  } catch (error) {
+    log.error('Error:', error);
+    return {
+      status: 500,
+      data: {
+        result: false,
+        message: error,
+      },
+    };
+  }
 };

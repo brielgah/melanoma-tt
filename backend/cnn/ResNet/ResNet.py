@@ -1,20 +1,16 @@
 import os
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import transforms, datasets
-from torchsummary import summary
-from torch.utils.data import Dataset, DataLoader, random_split
-from MelanomaDataset import MelanomaDataset
+from . import MelanomaDataset
+from torchvision import transforms
+from torch.utils.data import DataLoader, random_split
 from image_processing.util.converter import convertToOpenCVFormat
-import sys
 
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix
 import seaborn as sn
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 
 MODEL = "model_weights"
 MODEL_DIR = ""
