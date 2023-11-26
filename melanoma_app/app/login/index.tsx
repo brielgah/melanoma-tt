@@ -1,19 +1,27 @@
+import { Redirect } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import ColorPallete from "@/colorPallete";
-import LoginForm from "@/components/login/loginForm";
+import LoginMenu from "@/components/login/loginForm";
+import { useUser } from "@/contexts/userContext";
+import Styles from "@/styles";
 
 const Login = () => {
-  return (
-    <View style={styles.container}>
-      <LoginForm />
-    </View>
-  );
+  const { user } = useUser();
+
+  if (user?.id === undefined) {
+    return (
+      <View style={styles.container}>
+        <LoginMenu />
+      </View>
+    );
+  }
+  return <Redirect href="/(home)/followup" />;
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    ...Styles.centeredContainer,
     backgroundColor: ColorPallete.blue.dark,
   },
 });

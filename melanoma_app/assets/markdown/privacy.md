@@ -1,38 +1,25 @@
-# Privacidad
+# Acuerdo de Privacidad
 
-## subtitulo
+Este acuerdo de privacidad describe cómo se recopilan, utilizan y comparten los datos personales proporcionados por los usuarios de la aplicación [*APP_NAME*]. Al utilizar nuestra aplicación, usted acepta las prácticas de privacidad descritas en este documento.
 
-1. asd
-1. asda:
-    - easd
-    - asdas
+1. Información Recopilada:
+Recopilamos información que usted proporciona voluntariamente, como imágenes de lesiones de piel y datos personales para la creación de su cuenta. Además, podemos recopilar datos de uso, como la frecuencia de uso de la aplicación y las funciones utilizadas.
 
-asdasd [google.com](https://google.com)
+2. Uso de la Información:
+Utilizamos la información recopilada para facilitar la detección de posibles casos de cáncer de melanoma. No compartimos información personal con terceros sin su consentimiento.
 
----
+3. Seguridad de los Datos:
+Implementamos medidas de seguridad para proteger la información personal del acceso no autorizado o alteración. Sin embargo, ningún método de transmisión por internet o almacenamiento electrónico es completamente seguro, y no podemos garantizar la seguridad absoluta de los datos.
 
-asdas
+5. Acceso y Control de la Información Personal:
+Usted tiene el derecho de acceder, corregir o eliminar su información personal almacenada en nuestra aplicación. Puede realizar estos cambios desde la configuración de su cuenta o comunicándose con nuestro equipo de soporte.
 
----
+6. Cambios en la Política de Privacidad:
+Nos reservamos el derecho de actualizar esta política en cualquier momento. Le notificaremos sobre cambios significativos mediante la publicación de la nueva política en la aplicación.
 
-> asdads
-> asdda
+7. Consentimiento:
+Al utilizar nuestra aplicación, usted otorga su consentimiento para la recopilación y uso de su información según los términos establecidos en este acuerdo de privacidad.
 
-thiasd _asdas_
-asdasd **asdasd**
-  asdasd *asd* ~~asd~~
+Si tiene preguntas sobre esta política de privacidad, comuníquese con nosotros a través de *[correo electrónico de soporte]*.
 
-| # | asd | asd |
-|-|--|--|
-| 1 | asdsda | 1 |
-![Screen Shot 2019-10-05 at 3 19 33 AM](https://user-images.githubusercontent.com/26213148/66237659-d11f4280-e71f-11e9-91e3-7a3f08659d89.png)
-
-adsasd
-
-asdads
-
-adsdas
-
-asdasd
-
-asdad
+Gracias por confiar en nuestra aplicación *[APP_NAME]*. Su privacidad es de suma importancia para nosotros.

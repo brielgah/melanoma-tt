@@ -10,18 +10,25 @@ import CompareSelector from "@/components/lesion/compareSelector";
 import PhotosOverview from "@/components/lesion/photosOverview";
 import ShareModal from "@/components/lesion/shareModal";
 import SharedCarousel from "@/components/lesion/sharedCarousel";
+import Loading from "@/components/loading";
 import Section from "@/components/section";
+import { useUser } from "@/contexts/userContext";
+import { lesionFromInterface } from "@/models/lesion";
 import { default as PhotoModel } from "@/models/photo";
+import {
+  useGetLesionQuery,
+  usePatchLesionMutation,
+} from "@/services/melanomaApi";
 import Styles from "@/styles";
 import PhotoRedirectOptions from "@/utils/PhotoRedirectOptions";
-import { getLesions } from "@/utils/testData";
 
 const LesionDetail = () => {
+  const { user } = useUser();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const lesionIndex = Number(id || "");
-  const lesions = getLesions();
-  const lesion = lesions[lesionIndex];
+  const lesionIndex = Number(id);
+  const { data, isLoading } = useGetLesionQuery(lesionIndex);
   const navigation = useNavigation();
+  const lesion = lesionFromInterface(data, user);
   const [photos, setPhotos] = useState<PhotoModel[]>(
     Platform.select({
       web: lesion.photos,
@@ -34,6 +41,7 @@ const LesionDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [compareModalVisible, setCompareModalVisible] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
+  const [patchLesionTrigger] = usePatchLesionMutation();
 
   const compareImages = (
     beforeImageId: number | undefined,
@@ -64,12 +72,26 @@ const LesionDetail = () => {
     });
   };
 
+  const updateLesion = () => {
+    patchLesionTrigger({ id: lesion.id, name });
+    setIsEditing(false);
+  };
+
+  useEffect(() => {
+    setName(
+      lesion.userIsOwner
+        ? lesion.name
+        : `${lesion.ownerUsername}: ${lesion.name}`
+    );
+    setPhotos(lesion.photos);
+  }, [data]);
+
   useEffect(() => {
     if (lesion.userIsOwner) {
       navigation.setOptions({
         headerRight: () =>
           isEditing ? (
-            <SaveButton onPress={() => setIsEditing(false)} />
+            <SaveButton onPress={updateLesion} />
           ) : (
             <EditButton onPress={() => setIsEditing(true)} />
           ),
@@ -91,7 +113,7 @@ const LesionDetail = () => {
     });
 
     return unsubscribe;
-  }, [navigation, isEditing, name]);
+  }, [navigation, isEditing, name, data]);
 
   const Photos = () => {
     return PhotosOverview({ photos, isEditing });
@@ -103,6 +125,10 @@ const LesionDetail = () => {
       parentLesion: lesion,
     });
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <View style={Styles.flexContainer}>
@@ -158,6 +184,7 @@ const LesionDetail = () => {
         onCompareSelected={compareImages}
       />
       <ShareModal
+        parentLesion={lesion}
         visible={shareModalVisible}
         onCancel={() => setShareModalVisible(false)}
       />

@@ -7,7 +7,6 @@ import {
   postReminder,
   discardReminder,
 } from '../services/reminder';
-import log from '../../lib/logger'
 
 const reminderRouter = Router({ mergeParams: true });
 
@@ -36,7 +35,7 @@ reminderRouter.post('/:idLesion', (async (req, res, next) => {
     });
   }
   if (reminder.cycleLength == null) {
-          reminder.cycleLength = 0;
+    reminder.cycleLength = 0;
   }
   const options = {
     body: reminder as Reminder,
@@ -163,7 +162,7 @@ reminderRouter.post('/:idReminder/discard', (async (req, res, next) => {
     params: {
       idUser: Number(req.params.idUser),
       idReminder: Number(req.params.idReminder),
-      erase: erase,
+      erase,
     },
     body: null,
   };

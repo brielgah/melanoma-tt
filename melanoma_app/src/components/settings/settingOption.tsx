@@ -85,6 +85,7 @@ export const SettingBoolOption = (props: SettingBoolOptionProps) => {
 interface SettingPickOptionProps extends SettingOptionProps {
   enabled?: boolean;
   dataOptions: { label: string; value: number }[];
+  onValueChange: (val: number) => void;
 }
 
 export const SettingPickOption = (props: SettingPickOptionProps) => {
@@ -101,6 +102,7 @@ export const SettingPickOption = (props: SettingPickOptionProps) => {
         style={styles.pickerContainer}
         mode="dropdown"
         enabled={props.enabled}
+        onValueChange={props.onValueChange}
       >
         {pickerOptions}
       </Picker>

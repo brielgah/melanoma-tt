@@ -73,6 +73,7 @@ export const spawnProcess = async (
       });
     },
   );
+
   // Wait for the process to complete and return the result
   return await processCompletionPromise;
 };

@@ -327,7 +327,7 @@ def convert_image(img):
 
 
 def predict(img):
-    if os.path.exists(os.path.join(MODEL_DIR), MODEL)):
+    if os.path.exists(os.path.join(MODEL_DIR, MODEL)):
       device = "cuda" if torch.cuda.is_available() else "cpu"
       print("Loading model")
       model = ResNet101(img_channel=3, num_classes=2)

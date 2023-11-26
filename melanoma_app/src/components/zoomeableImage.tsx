@@ -5,7 +5,7 @@ import { ViewStyle } from "react-native";
 import Styles from "@/styles";
 
 interface ZoomeableImageProps {
-  image: ImageSource;
+  image: ImageSource | string;
   style?: ViewStyle;
   contentFit?: ImageContentFit;
 }

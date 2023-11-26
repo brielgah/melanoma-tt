@@ -13,7 +13,7 @@ const PrediagnosisBody = () => {
 
   return (
     <View style={[Styles.centeredContainer, Styles.topContainer]}>
-      <View style={[Styles.cardBorder, styles.card]}>
+      <View style={[Styles.cardBorder, styles.card, { width: "100%" }]}>
         <Text>
           Toma una foto nueva o seleeciona dede tu galeria. La foto será
           analizada para detectar la posibilidad de cáncer de melanoma

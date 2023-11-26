@@ -88,6 +88,7 @@ const UtilStyles = StyleSheet.create({
     width: 10,
   },
   formRow: {
+    width: "100%",
     marginTop: 10,
     padding: 10,
     ...ContainerStyles.horizontalContainer,

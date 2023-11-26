@@ -2,6 +2,7 @@ import log from '../../lib/logger';
 import { type RequestOptions } from '../../lib/types';
 import Lesion from '../../models/lesion.model';
 import Photo from '../../models/photo.model';
+import User from '../../models/user.model';
 
 type LesionPostRequestOptions = RequestOptions<Lesion, unknown>;
 
@@ -19,6 +20,7 @@ export const postLesion = async (options: LesionPostRequestOptions) => {
       data: {
         result: true,
         message: 'Ok',
+        id: lesion.id,
       },
     };
   } catch (error) {
@@ -37,7 +39,23 @@ type LesionGetRequestOptions = RequestOptions<unknown, { id: number }>;
 
 export const getLesionbyId = async (options: LesionGetRequestOptions) => {
   try {
-    const lesion = await Lesion.findByPk(options.params.id, { include: Photo });
+    const lesion = await Lesion.findByPk(options.params.id, {
+      include: [
+        Photo,
+        {
+          model: User,
+          through: {
+            attributes: [],
+          },
+          as: 'sharedWithUsers',
+          attributes: ['id', 'userName'],
+        },
+        {
+          model: User,
+          as: 'owner',
+        },
+      ],
+    });
     if (lesion === null) {
       return {
         status: 404,
@@ -48,9 +66,9 @@ export const getLesionbyId = async (options: LesionGetRequestOptions) => {
       };
     }
     log.info('Lesion was returned');
-    for await (const photo of lesion.photos) {
-      await Photo.setImage(photo);
-    }
+    // for await (const photo of lesion.photos) {
+    //   await Photo.setImage(photo);
+    // }
     return {
       status: 200,
       data: lesion,

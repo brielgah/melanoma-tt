@@ -1,4 +1,4 @@
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, AntDesign } from "@expo/vector-icons";
 import React, { Fragment } from "react";
 import {
   StyleSheet,
@@ -34,7 +34,11 @@ export const SaveButton = (props: BaseButtonProps) => {
       style={[styles.editButton, props.style]}
       onPress={() => props.onPress?.()}
     >
-      <FontAwesome name="save" size={24} color={ColorPallete.green.normal} />
+      <AntDesign
+        name="checkcircleo"
+        size={24}
+        color={ColorPallete.green.normal}
+      />
     </TouchableOpacity>
   );
 };

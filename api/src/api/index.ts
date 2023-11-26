@@ -12,9 +12,11 @@ import userRouter from './routes/user';
 import passport from '../lib/passport';
 import session from 'express-session';
 import operationRouter from './routes/operation';
+import cors from 'cors';
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 // Login components
