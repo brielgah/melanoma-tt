@@ -21,6 +21,7 @@ pyyaml = "*"
 azure-storage-blob = "*"
 azure-identity = "*"
 azure-keyvault-secrets = "*"
+azure-functions = "*"
 
 [dev-packages]
 pylint = "*"

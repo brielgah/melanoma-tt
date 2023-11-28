@@ -5,6 +5,7 @@ import {
   getReminderById,
   patchReminderById,
   postReminder,
+  discardReminder,
 } from '../services/reminder';
 
 const reminderRouter = Router({ mergeParams: true });
@@ -32,6 +33,9 @@ reminderRouter.post('/:idLesion', (async (req, res, next) => {
       result: false,
       message: 'missing target date',
     });
+  }
+  if (reminder.cycleLength == null) {
+    reminder.cycleLength = 0;
   }
   const options = {
     body: reminder as Reminder,
@@ -137,4 +141,37 @@ reminderRouter.delete('/:idReminder', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
+reminderRouter.post('/:idReminder/discard', (async (req, res, next) => {
+  if (req.params.idReminder == null) {
+    return res.status(400).send({
+      result: false,
+      message: 'missing reminder id',
+    });
+  }
+  if (req.params.idUser == null) {
+    return res.status(400).send({
+      result: false,
+      message: 'missing user id',
+    });
+  }
+  let erase = false;
+  if (req.body.erase != null) {
+    erase = Boolean(req.body.erase);
+  }
+  const options = {
+    params: {
+      idUser: Number(req.params.idUser),
+      idReminder: Number(req.params.idReminder),
+      erase,
+    },
+    body: null,
+  };
+
+  try {
+    const result = await discardReminder(options);
+    res.status(result.status).send(result.data);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler);
 export default reminderRouter;

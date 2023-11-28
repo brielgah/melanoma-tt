@@ -7,11 +7,11 @@ import User from "@/models/user";
 
 interface SharedCarouselProps {
   parentLesion: Lesion;
-  users: User[];
+  users: Partial<User>[];
 }
 
 const SharedCarousel = (props: SharedCarouselProps) => {
-  const renderUser = ({ item }: ListRenderItemInfo<User>) => {
+  const renderUser = ({ item }: ListRenderItemInfo<Partial<User>>) => {
     return <SharedUser parentLesion={props.parentLesion} user={item} />;
   };
 

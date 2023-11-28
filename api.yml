@@ -12,6 +12,7 @@ paths:
   # /user/{idUser}/reminder/{lesionId}: # add reminder to user
   # /user/{idUser}/associate/{idPatient}: # associate two users
   # /user/{idUser}/share/{idUserToAssociate}/{lesionId}: # share user's lesion to another user
+  # /user/{idUser/reminder/{reminderId}/discard: # discard reminder and update it if necessary
   # /operation/analyze/{operation}: # compare two photos
   # /prediagnose: # prediagnose a photo
 
@@ -264,6 +265,28 @@ paths:
         '401':
           $ref: "#/components/responses/Unauthorized"
 
+  /user/{idUser}/reminder/{idReminder}/discard/:
+    parameters:
+      - $ref: '#/components/parameters/idUser'
+      - $ref: '#/components/parameters/idReminder'
+    post:
+      description: Discards a reminder and creates a new one based on the cycleLength
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/discard'
+      responses:
+        '200':
+          $ref: "#/components/responses/OK"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+
   /user/{idUser}/associate/{idPatient}:
     parameters:
       - $ref: '#/components/parameters/idUser'
@@ -445,6 +468,8 @@ components:
           type: string
         lesionID:
           type: number
+        cycleLength:
+          type: number
     analyze:
       type: object
       properties:
@@ -459,4 +484,9 @@ components:
           type: string
         password:
           type: string
+    discard:
+      type: object
+      properties:
+        erase:
+          type: bool
 

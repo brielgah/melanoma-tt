@@ -1,13 +1,24 @@
 import { Entypo } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
-import { Fragment } from "react";
+import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import ColorPallete from "../../../colorPallete";
-import { default as LesionModel } from "../../../models/lesion";
+import {
+  default as LesionModel,
+  getFirstPhoto,
+  getLastUpdatedLabel,
+} from "../../../models/lesion";
 import Styles from "../../../styles";
-import { LesionImages } from "../../../utils/images";
+import { Images } from "../../../utils/images";
+
+import ConfirmationModal from "@/components/confirmationModal";
+import Loading from "@/components/loading";
+import {
+  useDeleteLesionMutation,
+  useGetPhotoQuery,
+} from "@/services/melanomaApi";
 
 interface LesionProps {
   lesion: LesionModel;
@@ -15,11 +26,29 @@ interface LesionProps {
 }
 
 const LesionItem = (props: LesionProps) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [deleteLesionTrigger, result] = useDeleteLesionMutation();
+  const thumbnail = getFirstPhoto(props.lesion);
+  const { data: photo } = useGetPhotoQuery(thumbnail?.id ?? -1);
+
+  const getPhotoPreview = () => {
+    if (props.lesion.photos.length === 0) return Images.noImage;
+    return photo?.image.data ?? Images.loading;
+  };
+
+  const deleteLesion = () => {
+    deleteLesionTrigger(props.lesion.id);
+  };
+
+  if (result.isLoading) {
+    return <Loading />;
+  }
+
   return (
     <View style={styles.container}>
       <View style={[Styles.photoContainer, styles.customPhotoContainer]}>
         <Image
-          source={LesionImages[props.lesion.getFirstPhoto().localId]}
+          source={getPhotoPreview()}
           style={styles.image}
           contentFit="cover"
           contentPosition="center"
@@ -42,13 +71,14 @@ const LesionItem = (props: LesionProps) => {
         )}
       </View>
       <View style={styles.dateContainer}>
-        <Text style={Styles.textBody}>
-          {props.lesion.getLastUpdatedLabel()}
-        </Text>
+        <Text style={Styles.textBody}>{getLastUpdatedLabel(props.lesion)}</Text>
       </View>
       <View style={styles.iconContainer}>
         {props.isEditing ? (
-          <TouchableOpacity style={styles.touchContainer}>
+          <TouchableOpacity
+            style={styles.touchContainer}
+            onPress={() => setIsModalVisible(true)}
+          >
             <Entypo name="cross" size={20} color="red" />
           </TouchableOpacity>
         ) : (
@@ -71,6 +101,12 @@ const LesionItem = (props: LesionProps) => {
           </Link>
         )}
       </View>
+      <ConfirmationModal
+        visible={isModalVisible}
+        message="¿Etás seguro que deseas eliminar la lesión? Esta operación no se puede deshacer"
+        onConfirmation={deleteLesion}
+        onCancel={() => setIsModalVisible(false)}
+      />
     </View>
   );
 };

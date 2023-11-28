@@ -4,6 +4,7 @@ import {
   Column,
   CreatedAt,
   DeletedAt,
+  ForeignKey,
   Model,
   PrimaryKey,
   Table,
@@ -20,12 +21,18 @@ export default class Reminder extends Model {
     id!: number;
 
   @Column
+  @ForeignKey(() => User)
     idUser!: number;
+
+  // In hours
+  @Column
+    cycleLength!: number;
 
   @BelongsTo(() => User, { foreignKey: 'idUser', targetKey: 'id' })
     user!: User;
 
   @Column
+  @ForeignKey(() => Lesion)
     idLesion!: number;
 
   @BelongsTo(() => Lesion, { foreignKey: 'idLesion', targetKey: 'id' })

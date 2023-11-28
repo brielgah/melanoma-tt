@@ -1,18 +1,18 @@
 import { FlatList, ListRenderItemInfo, StyleSheet } from "react-native";
 
 import Remainder from "./remainder";
-import { default as RemainderModel } from "../../../models/remainder";
+import { default as ReminderModel } from "../../../models/reminder";
 
-interface RemainderCarouselProps {
-  remainders: RemainderModel[];
+interface ReminderCarouselProps {
+  reminders: ReminderModel[];
 }
 
-const RemainderCarousel = (props: RemainderCarouselProps) => {
-  const remainders = props.remainders.sort((a, b) => {
+const ReminderCarousel = (props: ReminderCarouselProps) => {
+  const remainders = props.reminders.sort((a, b) => {
     if (a.date === b.date) return 0;
     return a.date < b.date ? -1 : 1;
   });
-  const renderRemainder = ({ item }: ListRenderItemInfo<RemainderModel>) => {
+  const renderRemainder = ({ item }: ListRenderItemInfo<ReminderModel>) => {
     return <Remainder remainder={item} />;
   };
 
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RemainderCarousel;
+export default ReminderCarousel;

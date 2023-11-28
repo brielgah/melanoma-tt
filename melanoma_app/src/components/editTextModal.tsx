@@ -9,6 +9,7 @@ interface TextEditModalProps {
   value: string;
   visible: boolean;
   onCancel: () => void;
+  onSave: (val: string) => void;
 }
 
 const TextEditModal = (props: TextEditModalProps) => {
@@ -37,7 +38,7 @@ const TextEditModal = (props: TextEditModalProps) => {
             styles.buttons,
           ]}
         >
-          <Button title="Guardar" />
+          <Button title="Guardar" onPress={() => props.onSave(value)} />
           <Button title="Cancelar" onPress={onCancel} color="black" />
         </View>
       </View>

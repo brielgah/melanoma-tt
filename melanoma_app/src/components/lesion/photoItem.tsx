@@ -6,7 +6,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ColorPallete from "../../colorPallete";
 import { default as PhotoModel } from "../../models/photo";
 import Styles from "../../styles";
-import { LesionImages } from "../../utils/images";
+import Loading from "../loading";
+
+import {
+  useDeletePhotoMutation,
+  useGetPhotoQuery,
+} from "@/services/melanomaApi";
+import { Images } from "@/utils/images";
 
 interface PhotoItemProps {
   photo: PhotoModel;
@@ -15,12 +21,22 @@ interface PhotoItemProps {
 
 const PhotoItem = (props: PhotoItemProps) => {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [deletePhotoTrigger, { isLoading }] = useDeletePhotoMutation();
+  const { data: photo } = useGetPhotoQuery(props.photo.id);
+
+  const deletePhoto = () => {
+    deletePhotoTrigger(props.photo.id);
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <View style={styles.container}>
       <View style={[Styles.photoContainer, styles.customPhotoContainer]}>
         <Image
-          source={LesionImages[props.photo.localId]}
+          source={photo?.image.data ?? Images.loading}
           style={styles.image}
           contentFit="cover"
           contentPosition="center"
@@ -35,7 +51,7 @@ const PhotoItem = (props: PhotoItemProps) => {
       <View style={styles.iconContainer}>
         {props.isEditing ? (
           <TouchableOpacity style={styles.touchContainer}>
-            <Entypo name="cross" size={20} color="red" />
+            <Entypo name="cross" size={20} color="red" onPress={deletePhoto} />
           </TouchableOpacity>
         ) : (
           <Link

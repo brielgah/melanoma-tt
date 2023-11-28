@@ -1,38 +1,15 @@
-# ¿Cómo tomar las fotps?
+Para tomar una foto, siga los siguientes pasos:
 
-## subtitulo
+1. Coloquese en una habitación con iluminación uniforme.
 
-1. asd
-1. asda:
-    - easd
-    - asdas
+1. Descubra la zona donde se encuentra la lesión.
 
-asdasd [google.com](https://google.com)
+1. Coloque su dispositivo a 10 cm de distancia de la lesión.
 
----
+1. Coloque una moneda de 50 centavos a un centímetro de la lesión.
 
-asdas
+1. Asegurese de que la camara abarca la lesión y la moneda completamente.
 
----
+1. Asegurese de que la lesión y las monedas aparecen centradas en la pantalla. (Solicite ayuda a una segunda persona en caso de ser necesario).
 
-> asdads
-> asdda
-
-thiasd _asdas_
-asdasd **asdasd**
-  asdasd *asd* ~~asd~~
-
-| # | asd | asd |
-|-|--|--|
-| 1 | asdsda | 1 |
-![Screen Shot 2019-10-05 at 3 19 33 AM](https://user-images.githubusercontent.com/26213148/66237659-d11f4280-e71f-11e9-91e3-7a3f08659d89.png)
-
-adsasd
-
-asdads
-
-adsdas
-
-asdasd
-
-asdad
+1. Presione el botón para capturar la imagen.

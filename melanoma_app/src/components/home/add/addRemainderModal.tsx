@@ -4,18 +4,27 @@ import { Modal, StyleSheet, Text, View } from "react-native";
 
 import Button from "../../button";
 
+import Alert from "@/Alert";
+import { useUser } from "@/contexts/userContext";
+import Lesion from "@/models/lesion";
+import { usePostReminderMutation } from "@/services/melanomaApi";
 import Styles from "@/styles";
 import { MAX_REMAINDER_LENGHT } from "@/utils/constants";
-import { getLesions } from "@/utils/testData";
 
 interface AddRemainderModalProps {
   visible: boolean;
   onCancel: () => void;
+  lesions: Lesion[];
 }
 
 const AddRemainderModal = (props: AddRemainderModalProps) => {
-  const lesions = getLesions();
-  const [selectedLesionId, setSelectedLesionId] = useState(lesions[0].id);
+  const { user } = useUser();
+  const lesions = props.lesions;
+  const [selectedLesionId, setSelectedLesionId] = useState(
+    lesions[0]?.id ?? -1
+  );
+  const [selectedDays, setSelectedDays] = useState(1);
+  const [postReminderTrigger] = usePostReminderMutation();
 
   const lesionOptions = lesions.map((lesion) => {
     return (
@@ -28,6 +37,24 @@ const AddRemainderModal = (props: AddRemainderModalProps) => {
     .map((val) => {
       return <Picker.Item label={`${val} días`} value={val} key={val} />;
     });
+
+  const addReminder = () => {
+    if (selectedLesionId === -1) {
+      Alert("Error", "Lesión inválida");
+      return;
+    }
+    const date = new Date();
+    date.setDate(date.getDate() + selectedDays);
+    postReminderTrigger({
+      idUser: user?.id ?? 0,
+      idLesion: selectedLesionId,
+      reminder: {
+        targetTimeStamp: date.toISOString(),
+        cycleLength: selectedDays * 24,
+      },
+    });
+    props.onCancel();
+  };
 
   return (
     <Modal
@@ -56,14 +83,14 @@ const AddRemainderModal = (props: AddRemainderModalProps) => {
             </View>
             <Picker
               style={Styles.flexContainer}
-              selectedValue={selectedLesionId}
-              onValueChange={setSelectedLesionId}
+              selectedValue={selectedDays}
+              onValueChange={setSelectedDays}
             >
               {dayOptions}
             </Picker>
           </View>
           <View style={[Styles.horizontalContainer, Styles.buttonsContainer]}>
-            <Button title="Añadir" />
+            <Button title="Añadir" onPress={addReminder} />
             <Button
               title="Cancelar"
               onPress={() => props.onCancel()}

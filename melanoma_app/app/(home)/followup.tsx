@@ -5,17 +5,19 @@ import { View, StyleSheet, InteractionManager } from "react-native";
 import { EditButton, SaveButton } from "@/components/button";
 import LesionsOverview from "@/components/home/followup/lesionsOverview";
 import RemainderCarousel from "@/components/home/followup/remainderCarousel";
+import Loading from "@/components/loading";
 import Section from "@/components/section";
-import Lesion from "@/models/lesion";
-import Remainder from "@/models/remainder";
+import { useUser } from "@/contexts/userContext";
+import { lesionFromInterface } from "@/models/lesion";
+import { reminderFromInterface } from "@/models/reminder";
+import { useGetUserQuery } from "@/services/melanomaApi";
 import Styles from "@/styles";
-import { getLesions, getRemainders } from "@/utils/testData";
 
 const Followup = () => {
   const navigation = useNavigation();
   const [isEditing, setIsEditing] = useState(false);
-  const [lesions, setLesions] = useState<Lesion[]>([]);
-  const [remainders, setRemainders] = useState<Remainder[]>([]);
+  const { user } = useUser();
+  const { data, isLoading } = useGetUserQuery(user?.id ?? 0);
 
   useEffect(() => {
     navigation.setOptions({
@@ -34,20 +36,29 @@ const Followup = () => {
     });
 
     const task = InteractionManager.runAfterInteractions(() => {
-      setLesions(getLesions());
-      setRemainders(getRemainders());
+      // setRemainders(getRemainders());
     });
 
     return () => task.cancel();
   }, [navigation, isEditing]);
 
   const Remainders = () => {
-    return RemainderCarousel({ remainders });
+    const reminders = (data?.reminders ?? []).map((reminder) =>
+      reminderFromInterface(reminder)
+    );
+    return RemainderCarousel({ reminders });
   };
 
   const Lesions = () => {
+    const lesions = (data?.lesions ?? []).map((ilesion) => {
+      return lesionFromInterface(ilesion, user);
+    });
     return LesionsOverview({ lesions, isEditing });
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <View style={Styles.flexContainer}>

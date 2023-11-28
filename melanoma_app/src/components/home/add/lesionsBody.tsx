@@ -5,14 +5,20 @@ import { StyleSheet, Text, View } from "react-native";
 
 import Button from "@/components/button";
 import { AddPhotoIcon } from "@/components/icons";
+import { useUser } from "@/contexts/userContext";
+import { lesionFromInterface } from "@/models/lesion";
+import { useGetUserQuery } from "@/services/melanomaApi";
 import Styles from "@/styles";
 import PhotoRedirectOptions from "@/utils/PhotoRedirectOptions";
 import { NEW_LESION_ID } from "@/utils/constants";
-import { getLesions } from "@/utils/testData";
 
 const LesionBody = () => {
-  const lesions = getLesions();
-  const [selectedLesionId, setSelectedLesionId] = useState(lesions[0].id);
+  const { user } = useUser();
+  const { data } = useGetUserQuery(user?.id ?? 0);
+  const lesions = (data?.lesions ?? []).map((lesion) =>
+    lesionFromInterface(lesion, user)
+  );
+  const [selectedLesionId, setSelectedLesionId] = useState(NEW_LESION_ID);
 
   const options = lesions.map((lesion) => {
     return (
@@ -22,7 +28,7 @@ const LesionBody = () => {
 
   return (
     <View style={[Styles.centeredContainer, Styles.topContainer]}>
-      <View style={[Styles.cardBorder, styles.card]}>
+      <View style={[Styles.cardBorder, styles.card, { width: "100%" }]}>
         <Text>
           Toma una foto nueva para agregarla a tu registro de la lesión
           seleccionada, llevar un seguimiento de las lesiones sospechosas es

@@ -2,10 +2,11 @@ import {
   Model,
   Table,
   ForeignKey,
-  Column,
   PrimaryKey,
+  Column,
 } from 'sequelize-typescript';
 import User from './user.model';
+import Lesion from './lesion.model';
 
 @Table
 export default class PatientRelationship extends Model {
@@ -14,8 +15,8 @@ export default class PatientRelationship extends Model {
   @Column
     doctorId!: number;
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => Lesion)
   @PrimaryKey
   @Column
-    patientId!: number;
+    lesionId!: number;
 }

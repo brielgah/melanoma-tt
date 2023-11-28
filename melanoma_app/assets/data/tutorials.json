@@ -5,20 +5,20 @@
 		"color": "#a9e2f0",
 		"steps": [
 			{
-				"title": "Paso 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Notificaciones",
+				"body": "Crea recordatorios para que no olvides agregar nuevas fotos a las lesiones en seguimiento.",
 				"backgroundColor": "#1573fe",
 				"image": "notification"
 			},
 			{
-				"title": "Paso 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Ajustes de notificaciones",
+				"body": "Configura tus notificaciones para que sean creadas automaticamente cada que creas una nueva lesión para segumiento.",
 				"backgroundColor": "#1573fe",
 				"image": "notification"
 			},
 			{
-				"title": "Paso 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Ajustes de notificaciones",
+				"body": "Configura la frecuencia de las notificaciones en el menú de ajustes.",
 				"backgroundColor": "#1573fe",
 				"image": "notification"
 			}
@@ -30,22 +30,16 @@
 		"color": "#91d474",
 		"steps": [
 			{
-				"title": "Paso 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Agrega fotos para seguimiento",
+				"body": "Toma fotos con la cámara de tu dispositivo a las lesiones en seguimiento, añade notas y registra información que importante en cada registro.",
 				"backgroundColor": "#049c6b",
-				"image": "notification"
+				"image": "photo"
 			},
 			{
-				"title": "Paso 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Agrega fotos para evaluación",
+				"body": "Toma fotos con la cámara de tu dispositivo o selecciona desde la galería. La imagen será analizada utilizando inteligencia artificial para determinar la probabilidad de que la lesión sea cáncer de tipo melanoma.",
 				"backgroundColor": "#049c6b",
-				"image": "notification"
-			},
-			{
-				"title": "Paso 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
-				"backgroundColor": "#049c6b",
-				"image": "notification"
+				"image": "gallery"
 			}
 		]
 	},
@@ -55,22 +49,16 @@
 		"color": "#deb6c9",
 		"steps": [
 			{
-				"title": "Paso 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Realiza un seguimiento a tus lesiones",
+				"body": "Captura fotos de la lesión de manera periódica para tener un registro que puedas compartir con tu doctor de confianza.",
 				"backgroundColor": "#7c4770",
-				"image": "notification"
+				"image": "photo"
 			},
 			{
-				"title": "Paso 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Compara la evolución de la lesión",
+				"body": "Selecciona dos fotos tomadas en fechas distintas para comparar la evolución de esta en los cuatro criterio ABCD (Asimetría, Bordes, Color y Diametro).",
 				"backgroundColor": "#7c4770",
-				"image": "notification"
-			},
-			{
-				"title": "Paso 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
-				"backgroundColor": "#7c4770",
-				"image": "notification"
+				"image": "search"
 			}
 		]
 	},
@@ -80,22 +68,22 @@
 		"color": "#f7b552",
 		"steps": [
 			{
-				"title": "Paso 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Prediagnóstico utilizando redes neuronales convolucionales",
+				"body": "Agrega fotos desde la galería de tu dispositivo o utilizando la cámara del mismo.",
 				"backgroundColor": "#945d0a",
-				"image": "notification"
+				"image": "gallery"
 			},
 			{
-				"title": "Paso 2: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Análisis de la imagen",
+				"body": "La imagen será enviada a la nube para que sea analizada por una red neuronal convolucional.",
 				"backgroundColor": "#945d0a",
-				"image": "notification"
+				"image": "cnn"
 			},
 			{
-				"title": "Paso 3: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				"body": "Duis et sem sit amet sapien placerat vehicula. Donec scelerisque, nisi a varius pharetra, ligula velit molestie dui, semper tincidunt dui lacus tincidunt erat. Maecenas pharetra turpis at nisi venenatis tempor. Praesent condimentum urna urna, sit amet facilisis justo lacinia a. Cras a diam a mauris faucibus ullamcorper id cursus elit. Curabitur mauris libero, malesuada a convallis non, euismod ac dolor.",
+				"title": "Recibe tus resultados",
+				"body": "Recibe los resultados en la aplicación en donde se indica la probabilidad de que la lesión sea producto del cáncer de melanoma. Consulta a tu médico para obtener un diagnóstico profesional.",
 				"backgroundColor": "#945d0a",
-				"image": "notification"
+				"image": "cnn"
 			}
 		]
 	}

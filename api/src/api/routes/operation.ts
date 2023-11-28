@@ -1,5 +1,5 @@
 import { type RequestHandler, Router } from 'express';
-import { spawnProcess } from '../services/operation';
+import { makeHttpRequest } from '../services/operation';
 
 const operationRouter = Router({ mergeParams: true });
 operationRouter.post('/analyze/:operation', (async (req, res, next) => {
@@ -24,9 +24,9 @@ operationRouter.post('/analyze/:operation', (async (req, res, next) => {
     return badRequest();
   }
   const cmd = {
-    cmd: '',
     blobNameBefore: '',
     blobNameAfter: '',
+    cmd: '',
   };
   switch (operation) {
     case 'compare':
@@ -51,7 +51,7 @@ operationRouter.post('/analyze/:operation', (async (req, res, next) => {
     },
     body: null,
   };
-  spawnProcess(options)
+  makeHttpRequest(options)
     .then((result) => {
       res.status(result.status).send(result.data);
     })

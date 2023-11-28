@@ -82,7 +82,6 @@ def hair_removal(img):
     processed_img, _bhf = dull_razor(img)
     return median_filtering(processed_img)
 
-
 def homomorphic_filtering(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype(np.float32) / 255.0
     # Compute the size of the input image

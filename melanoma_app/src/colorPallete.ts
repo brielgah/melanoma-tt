@@ -47,6 +47,11 @@ const ColorPallete = {
   background: {
     ligthbg: "#fbfbfb",
   },
+  error: {
+    normal: "#ad2a2a",
+    ligth: "#f57d7d",
+    dark: "#821919",
+  },
 };
 
 export default ColorPallete;
