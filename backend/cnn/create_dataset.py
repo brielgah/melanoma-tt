@@ -4,7 +4,7 @@ import cv2
 import csv
 import random
 from torch.utils.data import Dataset
-from image_processing.image import IMG_SIZE,ImageMetadata
+from image_processing.util.image import IMG_SIZE,ImageMetadata
 from sklearn.model_selection import train_test_split
 
 class Image():
@@ -23,6 +23,7 @@ TEST_CSV_FILE = os.getenv('TEST_CSV')
 HEADER_CSV = ["name", "path", "melanoma"]
 # Globals
 dataset = []
+not_melanoma_lesions = {'vasc':[], 'bcc':[], 'nv':[], 'df':[], 'akiec':[], 'bkl':[]}
 
 def create_image_object(img,is_melanoma):
   #content = cv2.imread(img)
@@ -53,7 +54,24 @@ def label_ham_dataset(ham_filenames,ham_csv):
       if img_name in ham_filenames:
         ham_filenames[img_name].metadata.is_melanoma = label == 'mel'
         dataset_labeled.append(ham_filenames[img_name])
+        if label in not_melanoma_lesions:
+          not_melanoma_lesions[label].append(ham_filenames[img_name])
   return dataset_labeled
+
+def get_not_melanoma_lesions():
+   train = []
+   test = []
+   SIZE = 185
+   for item,value in not_melanoma_lesions.items():
+      images = value.copy()
+      random.shuffle(images)
+      if len(images) > SIZE:
+         train += images[0:int(SIZE*0.8)]
+         test += images[int(SIZE*0.8):SIZE]
+      else:
+         train += images[0:int(len(images)*0.8)]
+         test += images[int(len(images)*0.8):len(images)]
+   return train+test
 
 # Consider add some test to verify the correct labeling for some random images in the dataset
 def process_dataset():
@@ -114,15 +132,15 @@ def write_csv(dataset,filename):
       row = [img.metadata.name,img.metadata.path,int(img.metadata.is_melanoma)]
       if img.metadata.is_melanoma:
         melanoma += 1
-        print(row)
       writer.writerow(row)
-    print(melanoma)
 
 def build_dataset():
   global dataset
   is_melanoma, no_melanoma = process_dataset()
   is_melanoma = remove_duplicates(is_melanoma)
-  no_melanoma = remove_duplicates(no_melanoma)
+  #no_melanoma = remove_duplicates(no_melanoma)
+  no_melanoma = get_not_melanoma_lesions()
+  print(len(is_melanoma))
   train = is_melanoma[0:int(len(is_melanoma)*0.8)] + no_melanoma[0:int(len(no_melanoma)*0.8)]
   test = is_melanoma[int(len(is_melanoma)*0.8):] + no_melanoma[int(len(no_melanoma)*0.8):]
   random.shuffle(train)
