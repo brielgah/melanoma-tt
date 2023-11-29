@@ -6,17 +6,12 @@ import { StyleSheet, View } from "react-native";
 import ColorPallete from "@/colorPallete";
 import Button from "@/components/button";
 import Comparison from "@/components/compare/comparison";
+import Loading from "@/components/loading";
+import { comparisonResultFromInterface } from "@/models/comparison";
+import { usePostCompareQuery } from "@/services/melanomaApi";
 import Styles from "@/styles";
 import ComparisonOptions from "@/utils/ComparisonOptions";
 import ComparisonParameters from "@/utils/ComparisonParameters";
-import { getComparison } from "@/utils/testData";
-
-const ComparisonParametersLabels = new Map([
-  [ComparisonParameters.ASYMMETRY, "Porcentage de asimetría"],
-  [ComparisonParameters.BORDER, "Porcentage de rugosidad"],
-  [ComparisonParameters.COLOR, "Histograma"],
-  [ComparisonParameters.DIAMETER, "Diametro"],
-]);
 
 const CompareImages = () => {
   const params = useLocalSearchParams<{ beforeId: string; afterId: string }>();
@@ -27,18 +22,22 @@ const CompareImages = () => {
     ComparisonParameters.ASYMMETRY
   );
   const navigator = useNavigation();
+  const { data, isLoading } = usePostCompareQuery({
+    before: params.beforeId + ".jpg",
+    after: params.afterId + ".jpg",
+  });
 
-  const comparison = getComparison(
-    Number(params.beforeId),
-    Number(params.afterId),
-    ComparisonParametersLabels.get(activeComparisonParameter) || "default"
-  );
+  const comparisons = comparisonResultFromInterface(data);
 
   useEffect(() => {
     navigator.setOptions({
-      title: `Comparando ${comparison.beforePhoto.createdOn.toLocaleString()} y ${comparison.afterPhoto.createdOn.toLocaleString()}`,
+      title: `Comparar evolución`,
     });
   }, [navigator]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <View style={Styles.flexContainer}>
@@ -58,7 +57,7 @@ const CompareImages = () => {
       <View style={styles.bodyContainer}>
         <Comparison
           activeOption={activeComparisonOption}
-          comparison={comparison}
+          comparison={comparisons.get(activeComparisonParameter)}
         />
       </View>
       <View

@@ -6,6 +6,7 @@ import { IReminder } from "@/models/reminder";
 import User from "@/models/user";
 import {
   ApiResponse,
+  CompareResponse,
   DoctorAssociationRequest,
   PostLesionResponse,
   PostLoginResponse,
@@ -189,6 +190,18 @@ export const melanomaApi = createApi({
       }),
       invalidatesTags: ["Lesion"],
     }),
+    postCompare: builder.query<
+      CompareResponse,
+      { before: string; after: string }
+    >({
+      query: ({ before, after }) => ({
+        url: "operation/analyze/compare",
+        method: "post",
+        body: {
+          blobNames: [before, after],
+        },
+      }),
+    }),
   }),
 });
 
@@ -213,4 +226,5 @@ export const {
   usePostDoctorAssociationMutation,
   useDeleteDoctorAssociationMutation,
   useDiscardReminderMutation,
+  usePostCompareQuery,
 } = melanomaApi;
