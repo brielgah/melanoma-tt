@@ -1,6 +1,5 @@
 from adapters.blob_storage import download_image
 import image_processing.processor as img_proc
-from cnn.ResNet.ResNet import predict
 
 
 def verify_image_content(img, blobName):
@@ -12,18 +11,23 @@ def verify_image_content(img, blobName):
     return None
 
 def compare(blobNameBefore, blobNameAfter):
-    result1 = extract(blobNameBefore)
-    result2 = extract(blobNameAfter)
+    img_before = download_image(blobNameBefore)
+    err_before = verify_image_content(img_before, blobNameBefore)
+    if err_before:
+        return {
+                'status': 500,
+                'data' : err_before,
+        }
 
-    if result1['status'] != 200:
-        return result1
-    if result2['status'] != 200:
-        return result2
+    img_after = download_image(blobNameAfter)
+    err_after = verify_image_content(img_after, blobNameAfter)
+    if err_after:
+        return {
+                'status': 500,
+                'data' : err_after,
+        }
 
-    result = {
-            'result1': result1['data'],
-            'result2': result2['data'],
-    };
+    result = img_proc.extract_and_compare(img_before, img_after)
 
     return {
             'status': 200,
@@ -39,8 +43,9 @@ def classify(blobName):
                 'data' : err,
         }
 
-    predict(img)
-    result = predict(img)
+    result = {
+        'result': 0,
+    }
     return {
             'status' : 500 if 'error' in result else 200,
             'data': result,

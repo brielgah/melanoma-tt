@@ -5,26 +5,36 @@ import ZoomeableImage from "../zoomeableImage";
 import { default as ComparisonModel } from "@/models/comparison";
 import Styles from "@/styles";
 import ComparisonOptions from "@/utils/ComparisonOptions";
-import { LesionImages } from "@/utils/images";
 
 interface ComparisonProps {
-  comparison: ComparisonModel;
+  comparison?: ComparisonModel;
   activeOption: ComparisonOptions;
 }
 
 const Comparison = (props: ComparisonProps) => {
-  let activeImageId = props.comparison.comparisonPhoto.localId;
+  if (props.comparison === undefined) {
+    return (
+      <View>
+        <Text>Error</Text>
+      </View>
+    );
+  }
+
+  let activeImage = "";
   if (props.activeOption === ComparisonOptions.BEFORE) {
-    activeImageId = props.comparison.beforePhoto.localId;
+    activeImage = props.comparison.beforePhoto;
   }
   if (props.activeOption === ComparisonOptions.AFTER) {
-    activeImageId = props.comparison.afterPhoto.localId;
+    activeImage = props.comparison.afterPhoto;
+  }
+  if (props.activeOption === ComparisonOptions.COMPARISON) {
+    activeImage = props.comparison.comparisonPhoto;
   }
 
   return (
     <View style={Styles.flexContainer}>
       <View style={styles.imageContainer}>
-        <ZoomeableImage image={LesionImages[activeImageId]} />
+        <ZoomeableImage image={activeImage} />
       </View>
       <ScrollView style={styles.bodyContainer}>
         <View style={[styles.valuesContainer, Styles.cardBorder]}>
@@ -33,7 +43,7 @@ const Comparison = (props: ComparisonProps) => {
               {props.comparison.parameterName + " anterior:"}
             </Text>
             <Text style={Styles.textBody}>
-              {props.comparison.beforeParameterValue}
+              {props.comparison.beforeParameterValue.toFixed(5)}
             </Text>
           </View>
           <View style={styles.valueRow}>
@@ -41,14 +51,16 @@ const Comparison = (props: ComparisonProps) => {
               {props.comparison.parameterName + " posterior:"}
             </Text>
             <Text style={Styles.textBody}>
-              {props.comparison.afterParameterValue}
+              {props.comparison.afterParameterValue.toFixed(5)}
             </Text>
           </View>
           <View style={styles.valueRow}>
             <Text style={Styles.textBody}>Cambio registrado:</Text>
             <Text style={Styles.textBody}>
-              {props.comparison.afterParameterValue -
-                props.comparison.beforeParameterValue}
+              {(
+                props.comparison.afterParameterValue -
+                props.comparison.beforeParameterValue
+              ).toFixed(5)}
             </Text>
           </View>
         </View>

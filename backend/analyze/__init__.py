@@ -3,10 +3,6 @@ import json
 import azure.functions as func
 import dispatcher
 
-app = func.FunctionApp()
-
-@app.function_name(name="operation")
-@app.route(route="analyze", methods=['GET', 'POST'])
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         body = req.get_json()
@@ -22,7 +18,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 mimetype="application/json",
                 status_code=result['status']
         )
-    except:
+    except Exception as err:
+        logging.error(err)
         return func.HttpResponse(
                 'internal error',
                 mimetype="application/json",

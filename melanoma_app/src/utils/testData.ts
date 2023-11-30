@@ -79,9 +79,9 @@ export function getComparison(
   const beforeValue = 98;
   const afterValue = 93;
   return new Comparison(
-    photos[0],
-    photos[1],
-    photos[2],
+    "",
+    "",
+    "",
     "Las lesiones de cáncer de melanoma tienen un alto procentaje de asimetría.",
     parameterName,
     beforeValue,

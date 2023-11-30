@@ -16,7 +16,7 @@ class ImageMetadata:
         return os.path.join(self.path, name)
 
 
-IMAGES_PATH = os.path.join(os.path.dirname(__file__), "./img/")
+IMAGES_PATH = os.path.join(os.path.dirname(__file__), "../img/")
 IMG_SIZE = 200
 
 TEST_IMAGES = [

@@ -26,15 +26,15 @@ const CompareSelector = (props: CompareSelectorProps) => {
 
   useEffect(() => {
     const [firstPhoto] = props.photos;
-    setBeforeImageId(firstPhoto?.localId);
-    setAfterImageId(firstPhoto?.localId);
+    setBeforeImageId(firstPhoto?.id);
+    setAfterImageId(firstPhoto?.id);
   }, [props.photos]);
 
   const options = props.photos.map((photo, index) => {
     return (
       <Picker.Item
         label={photo.createdOn.toLocaleString()}
-        value={photo.localId}
+        value={photo.id}
         key={index}
       />
     );
@@ -56,6 +56,7 @@ const CompareSelector = (props: CompareSelectorProps) => {
               </View>
               <Picker
                 style={styles.pickOption}
+                selectedValue={beforeImageId}
                 onValueChange={setBeforeImageId}
                 mode="dialog"
               >
@@ -68,6 +69,7 @@ const CompareSelector = (props: CompareSelectorProps) => {
               </View>
               <Picker
                 style={styles.pickOption}
+                selectedValue={afterImageId}
                 onValueChange={setAfterImageId}
                 mode="dialog"
               >

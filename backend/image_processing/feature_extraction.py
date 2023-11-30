@@ -1,9 +1,7 @@
 from collections import defaultdict
+from typing import Union
 import cv2
 import numpy as np
-
-
-Ellipse = tuple[tuple[int, int], tuple[int, int], float]
 
 
 def get_centroid(img) -> tuple[int, int]:
@@ -27,9 +25,11 @@ def rotate_img(img, x: int, y: int, angle: float):
 
 
 def traslate_img(img, x: int, y: int):
-    rows, cols = img.shape
-    mov_x = rows//2 - x
-    mov_y = cols//2 - y
+    # rows, cols = img.shape
+    rows = img.shape[0]
+    cols = img.shape[1]
+    mov_x = cols//2 - x
+    mov_y = rows//2 - y
 
     traslation_matrix = np.float32([[1, 0, mov_x], [0, 1, mov_y]])
 
@@ -45,23 +45,34 @@ def count_ones(img) -> int:
                 num_ones = num_ones + 1
     return num_ones
 
-
-def get_simetry(img) -> tuple[float, float]:
-    """
-    Receives a binary image
-    """
-    rows, cols = img.shape
-    ellipse, _ = get_major_axis(img)
+def center(msk, img=None):
+    rows, cols = msk.shape
+    ellipse, _ = get_major_axis(msk)
     _center, _axes, angle = ellipse
-    img = rotate_img(img, rows // 2, cols // 2, angle)
+    x, y = get_centroid(msk)
+    msk = traslate_img(msk, x, y)
+    msk = rotate_img(msk, cols // 2, rows // 2, angle)
+    if img is not None:
+        img = traslate_img(img, x, y)
+        img = rotate_img(img, cols // 2, rows // 2, angle)
+    return msk, img
 
-    x, y = get_centroid(img)
-    img = traslate_img(img, x, y)
+def get_simetry_images(img):
+    img, _ = center(img)
+
     vertical_mirror = cv2.flip(img, 1)
     horizontal_mirror = cv2.flip(img, 0)
 
     and_img_vert = cv2.bitwise_xor(img, vertical_mirror)
     and_img_hori = cv2.bitwise_xor(img, horizontal_mirror)
+    return and_img_hori, and_img_vert
+
+
+def get_simetry(img) -> tuple[float, float]:
+    """
+    Receives a binary image
+    """
+    and_img_hori, and_img_vert = get_simetry_images(img)
 
     percentage_vert = 1.0 - count_ones(and_img_vert) / count_ones(img)
     percentage_hort = 1.0 - count_ones(and_img_hori) / count_ones(img)
@@ -100,10 +111,8 @@ class Threshold:
 # Will receive the segmented lession in color. All of the boundaries
 # wich are not part of the lession must have an rgb(0,0,0) color
 
-
-def get_color_score(img, msk):
+def get_color_score_freqs(img, msk):
     rows, cols = msk.shape
-    min_app = int(count_ones(msk) * 0.05)
     thresholds = [
         Threshold('white', (0.8, 1), (0.8, 1), (0.8, 1)),
         Threshold('red', (0.588, 1), (0, 0.2), (0, 0.2)),
@@ -122,7 +131,11 @@ def get_color_score(img, msk):
             for threshold in thresholds:
                 if threshold.is_inside(r, g, b):
                     colors[threshold.label] += 1
+    return colors;
 
+def get_color_score(img, msk):
+    min_app = int(count_ones(msk) * 0.05)
+    colors = get_color_score_freqs(img, msk)
     color_score = 0
     for value in colors.values():
         if value > min_app:
@@ -164,7 +177,7 @@ def get_roughness(img) -> float:
     return slope
 
 
-def get_major_axis(img, img_org=None) -> tuple[Ellipse, np.ndarray | None]:
+def get_major_axis(img, img_org=None) -> tuple[cv2.RotatedRect, Union[np.ndarray, None]]:
     contours, _ = cv2.findContours(
         img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     largest_contour = max(contours, key=cv2.contourArea)

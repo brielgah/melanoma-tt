@@ -7,8 +7,7 @@ Config = {}
 
 def load():
     load_dotenv()
-    # TODO: is there a better way to do this
-    path = Path(__file__).parents[2] / './api/config/common.yml'
+    path = Path(__file__).parents[0] / './config.yml'
     with path.open() as file:
         Config = yaml.safe_load(file)
 

@@ -24,3 +24,35 @@ jobs:
         run: pipenv install --dev
       - name: Run pylint
         run: pipenv run lint
+
+  api-lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup nodejs
+        uses: actions/setup-node@v4.0.0
+        with:
+          node-version: '18.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run lin
+        run: npm run lint
+  
+  app-lin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./melanoma_app
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup nodejs
+        uses: actions/setup-node@v4.0.0
+        with:
+          node-version: '18.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run lin
+        run: npm run lint
