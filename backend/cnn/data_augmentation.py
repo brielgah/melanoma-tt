@@ -1,8 +1,10 @@
-import os
-import cv2
 import csv
-import numpy as np
+import os
 import random
+
+import cv2
+import numpy as np
+
 from image_processing.processor import process_image
 
 # Constants

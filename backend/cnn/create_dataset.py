@@ -1,11 +1,13 @@
-import sys
-import os
-import cv2
 import csv
+import os
 import random
-from torch.utils.data import Dataset
-from image_processing.util.image import IMG_SIZE, ImageMetadata
+import sys
+
+import cv2
 from sklearn.model_selection import train_test_split
+from torch.utils.data import Dataset
+
+from image_processing.util.image import IMG_SIZE, ImageMetadata
 
 
 class Image():
@@ -74,14 +76,15 @@ def get_not_melanoma_lesions():
         images = value.copy()
         random.shuffle(images)
         if len(images) > SIZE:
-            train += images[0:int(SIZE*0.8)]
-            test += images[int(SIZE*0.8):SIZE]
+            train += images[0:int(SIZE * 0.8)]
+            test += images[int(SIZE * 0.8):SIZE]
         else:
-            train += images[0:int(len(images)*0.8)]
-            test += images[int(len(images)*0.8):len(images)]
-    return train+test
+            train += images[0:int(len(images) * 0.8)]
+            test += images[int(len(images) * 0.8):len(images)]
+    return train + test
 
-# Consider add some test to verify the correct labeling for some random images in the dataset
+# Consider add some test to verify the correct labeling for some random
+# images in the dataset
 
 
 def process_dataset():
@@ -157,10 +160,10 @@ def build_dataset():
     # no_melanoma = remove_duplicates(no_melanoma)
     no_melanoma = get_not_melanoma_lesions()
     print(len(is_melanoma))
-    train = is_melanoma[0:int(len(is_melanoma)*0.8)] + \
-        no_melanoma[0:int(len(no_melanoma)*0.8)]
-    test = is_melanoma[int(len(is_melanoma)*0.8):] + \
-        no_melanoma[int(len(no_melanoma)*0.8):]
+    train = is_melanoma[0:int(len(is_melanoma) * 0.8)] + \
+        no_melanoma[0:int(len(no_melanoma) * 0.8)]
+    test = is_melanoma[int(len(is_melanoma) * 0.8):] + \
+        no_melanoma[int(len(no_melanoma) * 0.8):]
     random.shuffle(train)
     random.shuffle(test)
     write_csv(train, TRAIN_CSV_FILE)

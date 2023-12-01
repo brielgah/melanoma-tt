@@ -1,7 +1,10 @@
-import logging
 import json
+import logging
+
 import azure.functions as func
+
 import dispatcher
+
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
@@ -14,14 +17,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         result = dispatcher.dispatch(body['op'], body['blobNames'])
         return func.HttpResponse(
-                json.dumps(result['data']),
-                mimetype="application/json",
-                status_code=result['status']
+            json.dumps(result['data']),
+            mimetype="application/json",
+            status_code=result['status']
         )
     except Exception as err:
         logging.error(err)
         return func.HttpResponse(
-                'internal error',
-                mimetype="application/json",
-                status_code=500
+            'internal error',
+            mimetype="application/json",
+            status_code=500
         )

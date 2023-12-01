@@ -1,5 +1,6 @@
 from collections import defaultdict
 from typing import Union
+
 import cv2
 import numpy as np
 
@@ -28,8 +29,8 @@ def traslate_img(img, x: int, y: int):
     # rows, cols = img.shape
     rows = img.shape[0]
     cols = img.shape[1]
-    mov_x = cols//2 - x
-    mov_y = rows//2 - y
+    mov_x = cols // 2 - x
+    mov_y = rows // 2 - y
 
     traslation_matrix = np.float32([[1, 0, mov_x], [0, 1, mov_y]])
 
@@ -45,6 +46,7 @@ def count_ones(img) -> int:
                 num_ones = num_ones + 1
     return num_ones
 
+
 def center(msk, img=None):
     rows, cols = msk.shape
     ellipse, _ = get_major_axis(msk)
@@ -56,6 +58,7 @@ def center(msk, img=None):
         img = traslate_img(img, x, y)
         img = rotate_img(img, cols // 2, rows // 2, angle)
     return msk, img
+
 
 def get_simetry_images(img):
     img, _ = center(img)
@@ -106,10 +109,12 @@ class Threshold:
         return self.blue[0] <= b <= self.blue[1]
 
     def is_inside(self, r, g, b):
-        return self.is_inside_red(r) and self.is_inside_blue(b) and self.is_inside_green(g)
+        return self.is_inside_red(r) and self.is_inside_blue(
+            b) and self.is_inside_green(g)
 
 # Will receive the segmented lession in color. All of the boundaries
 # wich are not part of the lession must have an rgb(0,0,0) color
+
 
 def get_color_score_freqs(img, msk):
     rows, cols = msk.shape
@@ -131,7 +136,8 @@ def get_color_score_freqs(img, msk):
             for threshold in thresholds:
                 if threshold.is_inside(r, g, b):
                     colors[threshold.label] += 1
-    return colors;
+    return colors
+
 
 def get_color_score(img, msk):
     min_app = int(count_ones(msk) * 0.05)
@@ -177,7 +183,8 @@ def get_roughness(img) -> float:
     return slope
 
 
-def get_major_axis(img, img_org=None) -> tuple[cv2.RotatedRect, Union[np.ndarray, None]]:
+def get_major_axis(
+        img, img_org=None) -> tuple[cv2.RotatedRect, Union[np.ndarray, None]]:
     contours, _ = cv2.findContours(
         img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     largest_contour = max(contours, key=cv2.contourArea)

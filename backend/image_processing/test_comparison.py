@@ -1,8 +1,10 @@
-from .feature_extraction import center
 import cv2
-from .util.image import TEST_IMAGES
-from .comparison_img import get_color_score_pallet, get_contour_img, add_imgs
+
+from .comparison_img import add_imgs, get_color_score_pallet, get_contour_img
+from .feature_extraction import center
 from .processor import process_image
+from .util.image import TEST_IMAGES
+
 
 def main():
     image_metadata = TEST_IMAGES[1]
@@ -19,7 +21,7 @@ def main():
     msk, processed_img = center(msk, processed_img)
     pallete = get_color_score_pallet(processed_img, msk)
     contour1 = get_contour_img(processed_img1, msk1)
-    contour2 = get_contour_img(processed_img2, msk2, (255,0,0))
+    contour2 = get_contour_img(processed_img2, msk2, (255, 0, 0))
     dst = add_imgs(contour1, contour2)
     # print(img)
 
@@ -35,6 +37,7 @@ def main():
     # cv2.imshow('Symetry', symetries)
     # cv2.imshow('Ellipse', img_ellipse)
     cv2.waitKey(0)
+
 
 if __name__ == '__main__':
     main()

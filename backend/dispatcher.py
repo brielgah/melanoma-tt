@@ -1,85 +1,86 @@
-from adapters.blob_storage import download_image
 import image_processing.processor as img_proc
+from adapters.blob_storage import download_image
 
 
-def verify_image_content(img, blobName):
+def verify_image_content(img, blob_name):
     if 'error' in img:
         result = {
-                'error': f'Error with img: {blobName} {img["error"]} ',
+            'error': f'Error with img: {blob_name} {img["error"]} ',
         }
         return result
     return None
 
-def compare(blobNameBefore, blobNameAfter):
-    img_before = download_image(blobNameBefore)
-    err_before = verify_image_content(img_before, blobNameBefore)
+
+def compare(blob_name_before, blob_name_after):
+    img_before = download_image(blob_name_before)
+    err_before = verify_image_content(img_before, blob_name_before)
     if err_before:
         return {
-                'status': 500,
-                'data' : err_before,
+            'status': 500,
+            'data': err_before,
         }
 
-    img_after = download_image(blobNameAfter)
-    err_after = verify_image_content(img_after, blobNameAfter)
+    img_after = download_image(blob_name_after)
+    err_after = verify_image_content(img_after, blob_name_after)
     if err_after:
         return {
-                'status': 500,
-                'data' : err_after,
+            'status': 500,
+            'data': err_after,
         }
 
     result = img_proc.extract_and_compare(img_before, img_after)
 
     return {
-            'status': 200,
-            'data' : result,
+        'status': 200,
+        'data': result,
     }
 
-def classify(blobName):
-    img = download_image(blobName)
-    err = verify_image_content(img, blobName)
+
+def classify(blob_name):
+    img = download_image(blob_name)
+    err = verify_image_content(img, blob_name)
     if err:
         return {
-                'status': 500,
-                'data' : err,
+            'status': 500,
+            'data': err,
         }
 
     result = {
         'result': 0,
     }
     return {
-            'status' : 500 if 'error' in result else 200,
-            'data': result,
+        'status': 500 if 'error' in result else 200,
+        'data': result,
     }
 
-def extract(blobName):
-    img = download_image(blobName)
-    err = verify_image_content(img, blobName)
+
+def extract(blob_name):
+    img = download_image(blob_name)
+    err = verify_image_content(img, blob_name)
     if err:
         return {
-                'status': 500,
-                'data' : err,
+            'status': 500,
+            'data': err,
         }
     result = img_proc.extract(img)
     return {
-            'status': 200,
-            'data': result,
+        'status': 200,
+        'data': result,
     }
 
-def dispatch(op, blobNames):
-    if op == 'compare':
-        blobNameBefore = blobNames[0]
-        blobNameAfter = blobNames[1]
-        return compare(blobNameBefore, blobNameAfter)
-    elif op == 'classify':
-        blobName = blobNames[0]
-        return classify(blobName)
-    elif op == 'extract':
-        blobName = blobNames[0]
-        return extract(blobName)
-    else:
-        result = {
-                'status': 400,
-                'error': 'bad request',
-        }
-        return result
 
+def dispatch(operation, blob_names):
+    if operation == 'compare':
+        blob_name_before = blob_names[0]
+        blob_name_after = blob_names[1]
+        return compare(blob_name_before, blob_name_after)
+    if operation == 'classify':
+        blob_name = blob_names[0]
+        return classify(blob_name)
+    if operation == 'extract':
+        blob_name = blob_names[0]
+        return extract(blob_name)
+    return {
+        'status': 400,
+        'error': 'bad request',
+    }

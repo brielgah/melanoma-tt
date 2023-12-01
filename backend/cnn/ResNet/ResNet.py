@@ -1,19 +1,22 @@
 import os
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sn
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from . import MelanomaDataset
-from torchvision import transforms
+from sklearn.metrics import confusion_matrix
 from torch.utils.data import DataLoader, random_split
+from torchvision import transforms
+
 from image_processing.util.converter import convertToOpenCVFormat
 
-from sklearn.metrics import confusion_matrix
-import seaborn as sn
-import pandas as pd
-import matplotlib.pyplot as plt
+from . import MelanomaDataset
 
 MODEL = "model_weights"
 MODEL_DIR = ""
+
 
 class block(nn.Module):
     def __init__(
@@ -71,7 +74,13 @@ class ResNet(nn.Module):
     def __init__(self, block, layers, image_channels, num_classes):
         super(ResNet, self).__init__()
         self.in_channels = 64
-        self.conv1 = nn.Conv2d(image_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.conv1 = nn.Conv2d(
+            image_channels,
+            64,
+            kernel_size=7,
+            stride=2,
+            padding=3,
+            bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU()
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -109,7 +118,8 @@ class ResNet(nn.Module):
 
         return x
 
-    def _make_layer(self, block, num_residual_blocks, intermediate_channels, stride):
+    def _make_layer(self, block, num_residual_blocks,
+                    intermediate_channels, stride):
         identity_downsample = None
         layers = []
 
@@ -129,7 +139,11 @@ class ResNet(nn.Module):
             )
 
         layers.append(
-            block(self.in_channels, intermediate_channels, identity_downsample, stride)
+            block(
+                self.in_channels,
+                intermediate_channels,
+                identity_downsample,
+                stride)
         )
 
         # The expansion size is always 4 for ResNet 50,101,152
@@ -155,28 +169,34 @@ def ResNet101(img_channel=3, num_classes=1000):
 def ResNet152(img_channel=3, num_classes=1000):
     return ResNet(block, [3, 8, 36, 3], img_channel, num_classes)
 
+
 def dataloader_melanoma():
     train_dataset = MelanomaDataset(os.getenv('TRAIN_CSV'))
     test_dataset = MelanomaDataset(os.getenv('TEST_CSV'))
 
-    train_dataset, val_dataset = random_split(train_dataset,[0.8, 0.2])  
-   
-    print("Image shape of a random sample image : {}".format(train_dataset[0][0].numpy().shape), end = '\n\n')
-    
+    train_dataset, val_dataset = random_split(train_dataset, [0.8, 0.2])
+
+    print("Image shape of a random sample image : {}".format(
+        train_dataset[0][0].numpy().shape), end='\n\n')
+
     print("Training Set:   {} images".format(len(train_dataset)))
     print("Validation Set:   {} images".format(len(val_dataset)))
     print("Test Set:       {} images".format(len(test_dataset)))
-    
+
     BATCH_SIZE = 20
 
     # Generate dataloaderss
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=True)
-    
+
     return train_loader, val_loader, test_loader
 
-def train_model(train_loader,val_loader,test_loader,model,device):
+
+def train_model(train_loader, val_loader, test_loader, model, device):
     torch.cuda.empty_cache()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
@@ -184,57 +204,56 @@ def train_model(train_loader,val_loader,test_loader,model,device):
     train_samples_num = len(train_loader)
     val_samples_num = len(val_loader)
     train_costs, val_costs = [], []
-    
-    #Training phase.    
+
+    # Training phase.
     for epoch in range(EPOCHS):
 
         train_running_loss = 0
         correct_train = 0
-        
+
         model.train()
-        
+
         for inputs, labels in train_loader:
             inputs, labels = inputs.to(device), labels.to(device)
-            
-            """ for every mini-batch during the training phase, we typically want to explicitly set the gradients 
+
+            """ for every mini-batch during the training phase, we typically want to explicitly set the gradients
             to zero before starting to do backpropragation """
             optimizer.zero_grad()
-            
+
             # Start the forward pass
             prediction = model(inputs)
-                        
+
             loss = criterion(prediction, labels)
-          
+
             # do backpropagation and update weights with step()
-            loss.backward()         
+            loss.backward()
             optimizer.step()
-            
+
             # print('outputs on which to apply torch.max ', prediction)
             # find the maximum along the rows, use dim=1 to torch.max()
             _, predicted_outputs = torch.max(prediction.data, 1)
-            
-            # Update the running corrects 
+
+            # Update the running corrects
             correct_train += (predicted_outputs == labels).float().sum().item()
-            
+
             ''' Compute batch loss
-            multiply each average batch loss with batch-length. 
-            The batch-length is inputs.size(0) which gives the number total images in each batch. 
+            multiply each average batch loss with batch-length.
+            The batch-length is inputs.size(0) which gives the number total images in each batch.
             Essentially I am un-averaging the previously calculated Loss '''
             train_running_loss += (loss.data.item() * inputs.shape[0])
 
-
         train_epoch_loss = train_running_loss / train_samples_num
-        
+
         train_costs.append(train_epoch_loss)
-        
-        train_acc =  correct_train / train_samples_num
+
+        train_acc = correct_train / train_samples_num
 
         # Now check trained weights on the validation set
         val_running_loss = 0
         correct_val = 0
-      
+
         model.eval()
-    
+
         with torch.no_grad():
             for inputs, labels in val_loader:
                 inputs, labels = inputs.to(device), labels.to(device)
@@ -247,29 +266,45 @@ def train_model(train_loader,val_loader,test_loader,model,device):
 
                 # Compute validation accuracy.
                 _, predicted_outputs = torch.max(prediction.data, 1)
-                correct_val += (predicted_outputs == labels).float().sum().item()
+                correct_val += (predicted_outputs ==
+                                labels).float().sum().item()
 
             # Compute batch loss.
             val_running_loss += (loss.data.item() * inputs.shape[0])
 
             val_epoch_loss = val_running_loss / val_samples_num
             val_costs.append(val_epoch_loss)
-            val_acc =  correct_val / val_samples_num
-        
+            val_acc = correct_val / val_samples_num
+
         info = "[Epoch {}/{}]: train-loss = {:0.6f} | train-acc = {:0.3f} | val-loss = {:0.6f} | val-acc = {:0.3f}"
-        
-        print(info.format(epoch+1, EPOCHS, train_epoch_loss, train_acc, val_epoch_loss, val_acc))
-        
-        torch.save(model.state_dict(), os.path.join(os.getenv('DATASET_PATH'),str(epoch+1))) 
+
+        print(
+            info.format(
+                epoch + 1,
+                EPOCHS,
+                train_epoch_loss,
+                train_acc,
+                val_epoch_loss,
+                val_acc))
+
+        torch.save(
+            model.state_dict(), os.path.join(
+                os.getenv('DATASET_PATH'), str(
+                    epoch + 1)))
         torch.cuda.empty_cache()
-                                                                
-    torch.save(model.state_dict(), os.path.join(os.getenv('DATASET_PATH'),'model_weights_gpu'))  
-        
+
+    torch.save(
+        model.state_dict(),
+        os.path.join(
+            os.getenv('DATASET_PATH'),
+            'model_weights_gpu'))
+
     return train_costs, val_costs
 
-def test_model(model,test_loader,device):
+
+def test_model(model, test_loader, device):
     test_samples_num = len(test_loader)
-    correct = 0 
+    correct = 0
     model.eval()
     y_pred = []
     y_true = []
@@ -280,7 +315,10 @@ def test_model(model,test_loader,device):
             inputs, labels = inputs.to(device), labels.to(device)
             # Make predictions.
             prediction = model(inputs)
-            output = (torch.max(torch.exp(prediction), 1)[1]).data.cpu().numpy()
+            output = (
+                torch.max(
+                    torch.exp(prediction),
+                    1)[1]).data.cpu().numpy()
             y_pred.extend(output)
             labels_temp = labels.data.cpu().numpy()
             y_true.extend(labels_temp)
@@ -291,15 +329,15 @@ def test_model(model,test_loader,device):
             batch += 1
     test_accuracy = correct / test_samples_num
     print('Test accuracy: {}'.format(test_accuracy))
-    classes = [0,1]
+    classes = [0, 1]
     cf_matrix = confusion_matrix(y_true, y_pred)
     df_cm = pd.DataFrame(cf_matrix, classes, classes)
-    plt.figure(figsize = (12,7))
+    plt.figure(figsize=(12, 7))
     sn.heatmap(df_cm, annot=True)
     plt.xlabel("prediction")
     plt.ylabel("label")
     plt.show()
-    plt.savefig(os.path.join(os.getenv('DATASET_PATH'),'output.png'))
+    plt.savefig(os.path.join(os.getenv('DATASET_PATH'), 'output.png'))
 
 
 def test():
@@ -309,10 +347,12 @@ def test():
         model.cuda()
         torch.cuda.empty_cache()
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    #summary(model)
+    # summary(model)
     train_loader, val_loader, test_loader = dataloader_melanoma()
-    train_costs, val_costs = train_model(train_loader,val_loader,test_loader,model,device)
-    test_model(model, test_loader,device)
+    train_costs, val_costs = train_model(
+        train_loader, val_loader, test_loader, model, device)
+    test_model(model, test_loader, device)
+
 
 def convert_image(img):
     img = convertToOpenCVFormat(img)
@@ -324,34 +364,46 @@ def convert_image(img):
 
 def predict(img):
     if os.path.exists(os.path.join(MODEL_DIR, MODEL)):
-      device = "cuda" if torch.cuda.is_available() else "cpu"
-      print("Loading model")
-      model = ResNet101(img_channel=3, num_classes=2)
-      model.load_state_dict(torch.load(os.path.join(MODEL_DIR,MODEL),map_location=torch.device('cpu')))
-      input = convert_image(img)
-      model.eval()
-      output = model(input)
-      result = {
-          "result": output
-      }
-      return result
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        print("Loading model")
+        model = ResNet101(img_channel=3, num_classes=2)
+        model.load_state_dict(
+            torch.load(
+                os.path.join(
+                    MODEL_DIR,
+                    MODEL),
+                map_location=torch.device('cpu')))
+        input = convert_image(img)
+        model.eval()
+        output = model(input)
+        result = {
+            "result": output
+        }
+        return result
     else:
         result = {
             "error": "Can't found the trained model"
         }
         return result
 
+
 def main():
-    if os.path.exists(os.path.join(os.getenv('DATASET_PATH'),MODEL)):
+    if os.path.exists(os.path.join(os.getenv('DATASET_PATH'), MODEL)):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         print("Loading model")
         model = ResNet101(img_channel=3, num_classes=2)
-        model.load_state_dict(torch.load(os.path.join(os.getenv('DATASET_PATH'),MODEL),map_location=torch.device('cpu')))
-        #summary(model)
+        model.load_state_dict(
+            torch.load(
+                os.path.join(
+                    os.getenv('DATASET_PATH'),
+                    MODEL),
+                map_location=torch.device('cpu')))
+        # summary(model)
         train_loader, val_loader, test_loader = dataloader_melanoma()
-        test_model(model, test_loader,device)
+        test_model(model, test_loader, device)
     else:
         test()
+
 
 if __name__ == '__main__':
     main()

@@ -1,13 +1,13 @@
 import cv2
-from backend.image_processing.feature_extraction import (
-    get_centroid,
-    get_color_score,
-    get_major_axis,
-    get_roughness,
-    get_simetry,
-)
+
+from backend.image_processing.feature_extraction import (get_centroid,
+                                                         get_color_score,
+                                                         get_major_axis,
+                                                         get_roughness,
+                                                         get_simetry)
 from backend.image_processing.image import TEST_IMAGES
-from backend.image_processing.noise_removal import hair_removal, lession_segmentation
+from backend.image_processing.noise_removal import (hair_removal,
+                                                    lession_segmentation)
 
 
 def get_segmented_test_image():
