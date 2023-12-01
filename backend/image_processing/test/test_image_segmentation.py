@@ -1,8 +1,9 @@
-import pytest
 import cv2
-from ..testing import get_f1_score, get_mssism
+import pytest
+
+from ..image import TEST_IMAGES, ImageMetadata
 from ..noise_removal import hair_removal, lession_segmentation
-from ..image import ImageMetadata, TEST_IMAGES
+from ..testing import get_f1_score, get_mssism
 
 
 @pytest.mark.parametrize('image_metadata', TEST_IMAGES)

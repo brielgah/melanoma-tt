@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 import cv2
 import numpy as np
 
@@ -41,7 +42,8 @@ def median_filtering(img, ksize=5):
     return cv2.medianBlur(img, ksize)
 
 
-def otsu_method(img, gaussian_ksize=(5, 5), threshold=0, threshold_max_val=255):
+def otsu_method(img, gaussian_ksize=(5, 5), threshold=0,
+                threshold_max_val=255):
     # gray = img
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     blur = cv2.GaussianBlur(gray, gaussian_ksize, 0)
@@ -78,16 +80,18 @@ class ChanVeseConfig:
     iterations: int = 200
     delta: float = 0.5
 
+
 def hair_removal(img):
     processed_img, _bhf = dull_razor(img)
     return median_filtering(processed_img)
+
 
 def homomorphic_filtering(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype(np.float32) / 255.0
     # Compute the size of the input image
     rows, cols = image.shape
 
-    d0 = 0.1*rows
+    d0 = 0.1 * rows
     gamma_h = 1.2
     gamma_l = 0.4
     C = 1.2
@@ -107,7 +111,8 @@ def homomorphic_filtering(image):
     # Convert the mask to a floating-point array
     mask = mask.astype(np.float32)
 
-    # Create a complex array for the filter with the same size as the input image
+    # Create a complex array for the filter with the same size as the input
+    # image
     filter_array = np.zeros((rows, cols), dtype=np.complex64)
 
     # Set the filter values based on the formula

@@ -1,12 +1,13 @@
 import os
-import torch
+
+import cv2
 import numpy as np
 import pandas as pd
+import torch
 import torchvision.transforms as transforms
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader, Dataset, random_split
 
 from image_processing import processor
-import cv2
 
 np.random.seed(0)
 torch.manual_seed(0)
@@ -14,30 +15,32 @@ torch.cuda.manual_seed(0)
 torch.cuda.manual_seed_all(0)
 IMG_SIZE = 200
 
+
 class MelanomaDataset(Dataset):
     def __init__(self, path):
         self.path = path
-        content = pd.read_csv(path,header=0)
+        content = pd.read_csv(path, header=0)
         self.files = content.values
         self.transform = transforms.ToTensor()
 
     def __len__(self):
-        #Return the total number of examples in this split, e.g. if
-        #self.setname=='train' then return the total number of examples
-        #in the training set
+        # Return the total number of examples in this split, e.g. if
+        # self.setname=='train' then return the total number of examples
+        # in the training set
         return len(self.files)
 
     def __getitem__(self, idx):
-        #Return the example at index [idx]. The example is a dict with keys
-        #'data' (value: Tensor for an RGB image) and 'label' (value: multi-hot
-        #vector as Torch tensor of gr truth class labels).
-        name,path,label = self.files[idx]
-        img = cv2.imread(os.path.join(path,name),cv2.IMREAD_COLOR)
+        # Return the example at index [idx]. The example is a dict with keys
+        # 'data' (value: Tensor for an RGB image) and 'label' (value: multi-hot
+        # vector as Torch tensor of gr truth class labels).
+        name, path, label = self.files[idx]
+        img = cv2.imread(os.path.join(path, name), cv2.IMREAD_COLOR)
         img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
         proccessed_image = processor.process_image(img)
         tensor = self.transform(proccessed_image)
-        #load label
+        # load label
         return tensor, label
+
 
 """     def show_segmented(self,idx):
         image_window = tk.Tk()

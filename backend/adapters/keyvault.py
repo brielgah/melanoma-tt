@@ -1,8 +1,10 @@
-from . import config
 from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 
+from . import config
+
 secrets = {}
+
 
 def get_secrets():
     if len(secrets) != 0:
@@ -17,9 +19,9 @@ def get_secrets():
     tenant_id = azure_key_vault['tenantId']
 
     credential = ClientSecretCredential(
-            tenant_id=tenant_id,
-            client_secret=client_secret,
-            client_id=client_id,
+        tenant_id=tenant_id,
+        client_secret=client_secret,
+        client_id=client_id,
     )
 
     url = 'https://' + keyvault_name + '.vault.azure.net'
@@ -32,4 +34,3 @@ def get_secrets():
         secret = client.get_secret(name=name)
         secrets[secret_properties.name] = secret.value
     return secrets
-
