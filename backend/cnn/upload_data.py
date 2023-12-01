@@ -1,7 +1,8 @@
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
-from azure.identity import DefaultAzureCredential
-import pandas as pd
 import os
+
+import pandas as pd
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
 
 # Set your storage account details
 account_name = ''
@@ -14,7 +15,9 @@ test_csv = "test.csv"
 credential = DefaultAzureCredential()
 
 # Create a BlobServiceClient
-blob_service_client = BlobServiceClient(account_url=f"https://{account_name}.blob.core.windows.net", credential=account_key)
+blob_service_client = BlobServiceClient(
+    account_url=f"https://{account_name}.blob.core.windows.net",
+    credential=account_key)
 
 # Create a ContainerClient
 container_client = blob_service_client.get_container_client(container_name)
@@ -30,7 +33,7 @@ for index, row in train.iterrows():
 # Upload files from the local directory to Azure Blob Storage
 target_folder = "train"
 count = 0
-""" for root, dirs, files in os.walk(local_directory_path):
+for root, dirs, files in os.walk(local_directory_path):
     for file in files:
         if file not in train_labeled:
             continue
@@ -40,7 +43,7 @@ count = 0
         blob_client = container_client.get_blob_client(blob_name)
         with open(local_file_path, "rb") as data:
             count += 1
-            blob_client.upload_blob(data, overwrite=True) """
+            blob_client.upload_blob(data, overwrite=True)
 print("Train Data uploaded successfully.")
 print(f"Uploaded {count} files")
 
@@ -50,7 +53,7 @@ for index, row in test.iterrows():
     file = row["name"]
     path = row["path"]
     label = "melanoma" if row["melanoma"] == 1 else "other"
-    local_file_path = os.path.join(path,file)
+    local_file_path = os.path.join(path, file)
     blob_name = f"{target_folder}/{label}/{file}"
     blob_client = container_client.get_blob_client(blob_name)
     with open(local_file_path, "rb") as data:
