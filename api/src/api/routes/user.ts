@@ -129,6 +129,7 @@ userRouter.get('/:idUser', (async (req, res, next) => {
         reminders: user.reminders,
         lesions: user.lesions,
         sharedLesions: user.sharedLesions,
+        isDoctor: user.isDoctor
       };
       return res.json(response);
     })
@@ -226,13 +227,20 @@ userRouter.post('/:idUser/associate/:doctorUsername/:idLesion', (async (
   if (user1 == null) {
     return res.status(404).send({
       result: false,
-      message: 'User does not exist',
+      message: `User ${req.params.idUser} does not exist`,
     });
   }
   if (user2 == null) {
     return res.status(404).send({
       result: false,
-      message: 'User does not exist',
+      message: `User ${req.params.doctorUsername} does not exist`,
+    });
+  }
+  if (!user2.isDoctor)
+  {
+    return res.status(404).send({
+      result: false,
+      message: 'The User provided is not a doctor',
     });
   }
   if (lesion == null) {
@@ -302,13 +310,13 @@ userRouter.delete('/:idUser/associate/:doctorUsername/:idLesion', (async (
   if (user1 == null) {
     return res.status(404).send({
       result: false,
-      message: 'User does not exist',
+      message: `User ${req.params.idUser} does not exist`,
     });
   }
   if (user2 == null) {
     return res.status(404).send({
       result: false,
-      message: 'User does not exist',
+      message: `User ${req.params.doctorUsername} does not exist`,
     });
   }
   if (lesion == null) {
