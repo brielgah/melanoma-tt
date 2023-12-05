@@ -1,5 +1,12 @@
+import logging
+import os
+import urllib.request
+
 import image_processing.processor as img_proc
 from adapters.blob_storage import download_image
+
+CNN_NAME = "CNN_ENDPOINT_URL"
+CNN_KEY = "CNN_API_KEY"
 
 
 def verify_image_content(img, blob_name):
@@ -44,10 +51,48 @@ def classify(blob_name):
             'status': 500,
             'data': err,
         }
-
-    result = {
-        'result': 0,
+    url = os.getenv(CNN_NAME)
+    if url is None:
+        return {
+            'status': 500,
+            'data': "CNN URL enviroment variable is not defined"
+        }
+    api_key = os.getenv(CNN_KEY)
+    if api_key is None:
+        return {
+            'status': 500,
+            'data': "CNN API key enviroment variable is not defined"
+        }
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': (
+            'Bearer ' + api_key)}
+    body = {
+        "Inputs": {
+            "WebServiceInput0": [
+                {
+                    "image": "",
+                    "id": 0,
+                    "category": "melanoma"
+                }]
+        }
     }
+    req = urllib.request.Request(url, body, headers)
+    result = {}
+    try:
+        response = urllib.request.urlopen(req)
+
+        result = response.read()
+    except urllib.error.HTTPError as error:
+        result["error"] = str(error.info())
+        logging.error(
+            "The request failed with status code: " + str(error.code))
+
+        # Print the headers - they include the requert ID and the timestamp,
+        # which are useful for debugging the failure
+        logging.error(error.info())
+        logging.error(error.read().decode("utf8", 'ignore'))
+
     return {
         'status': 500 if 'error' in result else 200,
         'data': result,
